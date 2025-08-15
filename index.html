@@ -163,10 +163,10 @@ background:#ffffff;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.12);fo
 }
 @media(prefers-color-scheme:dark){
   :root{
-    --sand:#242018;   /* heller Sand (dark) */
-    --dune:#2b251f;   /* Düne (dark) */
+    --sand:#2b241d;   /* +1 Step heller Sand (dark) */
+    --dune:#342b23;   /* +1 Step Düne (dark) */
     --sea:#7bc3d4;    /* Meer-Akzent bleibt */
-    --bd-desert:#3a3127; /* wärmere Border */
+    --bd-desert:#463b30; /* wärmere Border */
   }
 }
 body{
@@ -340,9 +340,7 @@ h2{ text-align:center; }
 
 /* Dark-mode: lighter desert gradient */
 @media (prefers-color-scheme:dark){
-  body{
-    background:linear-gradient(180deg, var(--sand) 0%, var(--dune) 60%, #0f1418 100%);
-  }
+  body{ background:linear-gradient(180deg, var(--sand) 0%, var(--dune) 60%, #141a1f 100%); }
 }
 
 </style>
@@ -392,7 +390,7 @@ h2{ text-align:center; }
     <p id="timestamp" style="font-size: 0.8em; color:var(--muted-global);"></p>
 
     <p style="text-align:center">🔥 Jeder digitale Gruß, jede Message – ihr seid unser Rückenwind!<br><strong>🚴 Robbie & Kike 🚴</strong></p>
-    <div id="counter"><img src="https://visitor-badge.laobi.icu/badge?page_id=enrique-doubleyou.basajaun" alt="Seitenaufrufe"></div>
+    <div id="counter"><img src="https://visitor-badge.laobi.icu/badge?page_id=enrique-doubleyou.badlands" alt="Seitenaufrufe"></div>
   
     <section class="abschluss" id="plan">
   <h2>Planung &amp; Strategie</h2>
@@ -513,7 +511,7 @@ h2{ text-align:center; }
 <script>
   // === Badlands Live-Galerie (Direct-Mode via Google Drive + Apps Script JSON Feed) ===
   // Konfiguration
-  const FEED_URL = "YOUR_APPS_SCRIPT_WEBAPP_URL"; // z.B. https://script.google.com/macros/s/.../exec
+  const FEED_URL = new URLSearchParams(location.search).get("feed") || "YOUR_APPS_SCRIPT_WEBAPP_URL"; // z.B. https://script.google.com/macros/s/.../exec
   const FIRST_LIMIT = 48;
   const feedGrid = document.getElementById("bildergalerie");
   const noteNoImages = document.getElementById("noImages");
