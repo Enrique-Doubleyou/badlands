@@ -58,7 +58,7 @@
     footer {
       text-align: center;
       padding: 1rem;
-      color: #6c757d;
+      color:var(--muted-global);
     }
     #counter {
       font-size: 0.9em;
@@ -201,7 +201,7 @@ a{ color: var(--sea); }
 .mini-thumb{width:92px;height:58px;border-radius:8px;border:1px solid var(--bd-desert, #e9ecef);
   background:linear-gradient(135deg,#e9d8b4,#d0c7ae);background-position:center;background-size:cover}
 .mini-card strong{display:block;font-size:.98rem}
-.mini-card span{display:block;font-size:.8rem;color:#6c757d}
+.mini-card span{display:block;font-size:.8rem;color:var(--muted-global)}
 @media(prefers-color-scheme:dark){
   .mini-card{background:#11161bdd;border-color:#2a2e33}
   .mini-thumb{border-color:#2a2e33;background:linear-gradient(135deg,#4a3f30,#34302a)}
@@ -223,6 +223,19 @@ a{ color: var(--sea); }
 
 /* Komoot heading centered */
 .komoot h2{text-align:center}
+
+
+/* Global readable colors */
+:root{ --fg-global:#212529; --muted-global:#5f6b74; }
+@media(prefers-color-scheme:dark){
+  :root{ --fg-global:#e8ecef; --muted-global:#b4bec7; }
+}
+body{ color: var(--fg-global); }
+footer{ color: var(--muted-global); }
+.keychips .chip{ color: var(--muted-global); }
+.mini-card span{ color: var(--muted-global); }
+.keynote{ color: var(--fg-global); } /* ensure readable in dark */
+#timestamp, #noImages{ color: var(--muted-global) !important; }
 
 </style>
 <meta name="description" content="&quot;Die wilde Wüste Andalusiens: Wadis, Salzebenen, steinige Pistas – Wasser & Hitze als limitierende Faktoren. Durch Gorafe & Tabernas, entlang der Küste von Cabo de Gata und hinauf in die Sierra Nevada Richtung Pico Veleta (3.396 m). Start und Ziel in Granada: Wüste, Wind, Hitze – Wasser- und Zeitmanagement werden entscheiden.&quot;">
@@ -267,10 +280,10 @@ a{ color: var(--sea); }
     </div>
 
     <h2 id="galerie">📸 Bildergalerie</h2>
-    <p style="font-size:0.9em;color:#6c757d;margin:-.5rem 0 0.5rem">Aktualisiert stündlich automatisch (Uploads per Google Drive).</p>
+    <p style="font-size:0.9em;color:var(--muted-global);margin:-.5rem 0 0.5rem">Aktualisiert stündlich automatisch (Uploads per Google Drive).</p>
     <div id="bildergalerie" class="bildergalerie"></div>
-    <p id="noImages" style="text-align: center; color: #999; display: none;">Noch keine Event-Bilder verfügbar.</p>
-    <p id="timestamp" style="font-size: 0.8em; color: #666;"></p>
+    <p id="noImages" style="text-align: center; color:var(--muted-global); display: none;">Noch keine Event-Bilder verfügbar.</p>
+    <p id="timestamp" style="font-size: 0.8em; color:var(--muted-global);"></p>
 
     <p style="text-align:center">🔥 Jeder digitale Gruß, jede Message – ihr seid unser Rückenwind!<br><strong>🚴 Robbie & Kike 🚴</strong></p>
     <div id="counter"><img src="https://visitor-badge.laobi.icu/badge?page_id=enrique-doubleyou.basajaun" alt="Seitenaufrufe"></div>
@@ -304,7 +317,7 @@ a{ color: var(--sea); }
     <div class="grid" role="list">
       <div class="card" role="listitem">
         <strong>Bike</strong>
-        <p style="margin:.2rem 0;color:#6c757d">Canyon Inflite CF SLX · Z45i21SL · Tufo Thundero · Tannus</p>
+        <p style="margin:.2rem 0;color:var(--muted-global)">Canyon Inflite CF SLX · Z45i21SL · Tufo Thundero · Tannus</p>
         <ul class="list">
           <li>Zielgewicht (ohne Wasser): ≤ 13&nbsp;kg</li>
           <li>Reifen: Tufo Thundero 40–45&nbsp;mm</li>
@@ -371,12 +384,12 @@ a{ color: var(--sea); }
     </div>
   </details>
   <div class="footer-minor">
-    <div style="color:#6c757d">Fragen, Daten oder GPX? → <a href="mailto:enrique.doubleyou@gmail.com">enrique.doubleyou@gmail.com</a></div>
+    <div style="color:var(--muted-global)">Fragen, Daten oder GPX? → <a href="mailto:enrique.doubleyou@gmail.com">enrique.doubleyou@gmail.com</a></div>
   </div>
 </section>
 <div class="mini-prev" id="basajaun-prev">
-  <a class="mini-card" href="index.html" title="Zur Basajaun-Seite">
-    <div class="mini-thumb" style="background-image:url('banner_basajaun.jpg');"></div>
+  <a class="mini-card" href="https://enrique-doubleyou.github.io/basajaun/" title="Zur Basajaun-Seite">
+    <div class="mini-thumb" style="background-image:url('https://enrique-doubleyou.github.io/basajaun/banner.jpg');"></div>
     <div class="mini-meta">
       <strong>Basajaun — Rückblick</strong>
       <span>Galerie · Livetracking · Fazit</span>
