@@ -198,8 +198,7 @@ a{ color: var(--sea); }
 .mini-prev{display:flex;justify-content:center;margin:.5rem 0 1rem}
 .mini-card{display:grid;grid-template-columns:92px 1fr;gap:.6rem;align-items:center;
   border:1px solid var(--bd-desert, #e9ecef);border-radius:12px;padding:.5rem .6rem;text-decoration:none;background:#ffffffdd}
-.mini-thumb{width:92px;height:58px;border-radius:8px;border:1px solid var(--bd-desert, #e9ecef);
-  background:linear-gradient(135deg,#e9d8b4,#d0c7ae);background-position:center;background-size:cover}
+.mini-thumb{width:92px;height:58px;border-radius:8px;border:1px solid var(--bd-desert, #e9ecef);object-fit:cover;display:block}
 .mini-card strong{display:block;font-size:.98rem}
 .mini-card span{display:block;font-size:.8rem;color:var(--muted-global)}
 @media(prefers-color-scheme:dark){
@@ -337,6 +336,13 @@ footer{ color: var(--muted-global); }
 /* Heading anchors look and center like headings */
 h2 .heading-card{ font-size:1em; line-height:1.2; }
 h2{ text-align:center; }
+
+
+/* Mobile: keep pill labels visible */
+@media (max-width:480px){
+  .fab-pill span{ display:inline; }
+  .fab-pill{ padding:.45rem .6rem; }
+}
 
 </style>
 <meta name="description" content="&quot;Die wilde Wüste Andalusiens: Wadis, Salzebenen, steinige Pistas – Wasser & Hitze als limitierende Faktoren. Durch Gorafe & Tabernas, entlang der Küste von Cabo de Gata und hinauf in die Sierra Nevada Richtung Pico Veleta (3.396 m). Start und Ziel in Granada: Wüste, Wind, Hitze – Wasser- und Zeitmanagement werden entscheiden.&quot;">
@@ -488,7 +494,7 @@ h2{ text-align:center; }
 </section>
 <div class="mini-prev" id="basajaun-prev">
   <a class="mini-card" href="https://enrique-doubleyou.github.io/basajaun/" title="Zur Basajaun-Seite">
-    <div class="mini-thumb" style="background-image:url('https://enrique-doubleyou.github.io/basajaun/banner.jpg');"></div>
+    <img class="mini-thumb" src="https://enrique-doubleyou.github.io/basajaun/banner.jpg" alt="Basajaun Banner">
     <div class="mini-meta">
       <strong>Basajaun — Rückblick</strong>
       <span>Galerie · Livetracking · Fazit</span>
