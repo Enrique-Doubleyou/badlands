@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Badlands 2025</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #212529;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      max-height: 280px;
+    }
+    main {
+      padding: 1rem;
+      max-width: 700px;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2em;
+      margin: 0.5em 0;
+      color: #1d3557;
+    }
+    h1 a {
+      text-decoration: none;
+      color: inherit;
+    }
+    h1 a:hover {
+      text-decoration: underline;
+    }
+    h2 {
+      font-size: 1.3em;
+      margin-bottom: 1em;
+      color: #457b9d;
+    }
+    .responsive-frame {
+      width: 100%;
+      max-width: 700px;
+      height: 400px;
+      border: none;
+      margin: 0 auto 2em;
+      display: block;
+    }
+    .komoot {
+      margin-bottom: 2em;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: #6c757d;
+    }
+    #counter {
+      font-size: 0.9em;
+      margin-top: 1em;
+    }
+    .bildergalerie {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 2em;
+    }
+    .bildergalerie > div {
+      width: 150px;
+    }
+    .bildergalerie img {
+      width: 150px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .lightbox:target {
+      display: flex;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 2em;
+      text-decoration: none;
+    }
+  
+  /* === Abschluss & Ressourcen (scoped, light theme) === */
+  .abschluss{--bg:#ffffff;--fg:#212529;--muted:#6c757d;--acc:#1d3557;--bd:#e9ecef;--chip:#f8f9fa}
+  .abschluss{margin:2rem auto;padding:1.25rem;border:1px solid var(--bd);border-radius:16px;background:var(--bg);max-width:700px}
+  .abschluss *{box-sizing:border-box;color:var(--fg)}
+  .abschluss h2{margin:.2rem 0 1rem;font-size:1.4rem;color:var(--acc)}
+  .abschluss h3{margin:1rem 0 .5rem;font-size:1.05rem;color:var(--muted)}
+  .badges{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem;margin:0 0 .5rem;padding:0;list-style:none}
+  .badges li{background:var(--chip);border:1px solid var(--bd);padding:.6rem .7rem;border-radius:12px;display:flex;flex-direction:column;gap:.15rem}
+  .badges span{font-size:.76rem;color:var(--muted)}
+  .badges strong{font-size:1.05rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.6rem}
+  .card{border:1px solid var(--bd);background:var(--chip);border-radius:12px;padding:.7rem}
+  .list{margin:.3rem 0 0;padding-left:1.1rem;text-align:left}
+  .list li{margin:.2rem 0}
+  .meta{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+  .chip{font-size:.75rem;padding:.2rem .45rem;border:1px solid var(--bd);border-radius:999px;background:#fff;color:var(--muted)}
+  .downloads{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.5rem;margin-top:.6rem}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.6rem .8rem;border-radius:10px;border:1px solid var(--bd);background:#fff;text-decoration:none}
+  .btn:hover{transform:translateY(-1px)}
+  .btn svg{width:18px;height:18px}
+  details.ab{border:1px solid var(--bd);border-radius:12px;background:var(--chip);padding:.6rem .8rem;margin-top:.5rem;text-align:left}
+  details.ab summary{cursor:pointer;font-weight:600;list-style:none}
+  details.ab summary::-webkit-details-marker{display:none}
+  .footer-minor{margin-top:.7rem;padding-top:.6rem;border-top:1px dashed var(--bd);display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;justify-content:space-between}
+  @media (prefers-reduced-motion:no-preference){.btn{transition:transform .15s ease}}
+
+
+  
+/* === TOC FAB (Floating "Zur Galerie") === */
+  .toc-fab{position:fixed;right:max(12px, env(safe-area-inset-right));top:max(12px, env(safe-area-inset-top));z-index:9999;
+    display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .7rem;border-radius:999px;border:1px solid #e9ecef;
+    background:#ffffff;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.12);font-weight:600}
+  .toc-fab:hover{transform:translateY(-1px)}
+  .toc-fab:focus{outline:2px solid #1d3557;outline-offset:2px}
+  @media (prefers-reduced-motion:no-preference){.toc-fab{transition:transform .15s ease, box-shadow .15s ease}}
+  @media (max-width:480px){.toc-fab span{display:none}}
+  @media (prefers-color-scheme:dark){
+    .toc-fab{background:#11161b;border-color:#2a2e33;color:#e8ecef;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+  }
+/*===util===*/html{scroll-behavior:smooth}/*===abschluss-auto-theme===*/.abschluss{--bg:#ffffff;--fg:#212529;--muted:#6c757d;--acc:#1d3557;--bd:#e9ecef;--chip:#f8f9fa;--ok:#00b37a;--warn:#ffb020;--err:#ff5a5f;scroll-margin-top:80px}@media(prefers-color-scheme:dark){.abschluss{--bg:#0b0d10;--fg:#e8ecef;--muted:#9aa4ad;--acc:#3aa0ff;--bd:#24303a;--chip:#12171c}}
+/*===fab-top===*/.totop-fab{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));z-index:9999;display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .7rem;border-radius:999px;border:1px solid #e9ecef;background:#ffffff;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.12);font-weight:600}.totop-fab:hover{transform:translateY(-1px)}.totop-fab:focus{outline:2px solid #1d3557;outline-offset:2px}@media(prefers-color-scheme:dark){.totop-fab{background:#11161b;border-color:#2a2e33;color:#e8ecef;box-shadow:0 6px 20px rgba(0,0,0,.5)}}
+
+/* Badlands Kernaussagen */
+.keychips{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin:.5rem 0 1rem}
+.keychips .chip{font-size:.8rem;padding:.25rem .5rem;border:1px solid #e9ecef;border-radius:999px;background:#fff;color:#495057}
+.keynote{font-size:.95rem;color:#555;margin:.25rem 0 1rem}
+
+
+/* FAB left (Strategie) */
+.toc-left{position:fixed;left:max(12px,env(safe-area-inset-left));top:max(12px,env(safe-area-inset-top));z-index:9999;
+display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .7rem;border-radius:999px;border:1px solid #e9ecef;
+background:#ffffff;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.12);font-weight:600}
+.toc-left:hover{transform:translateY(-1px)}
+@media (prefers-color-scheme:dark){
+  .toc-left{background:#11161b;border-color:#2a2e33;color:#e8ecef;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+}
+
+
+/* === Desert Theme (Wüste/Meer) === */
+:root{
+  --sand:#f3e6cf;        /* warmer Sand */
+  --dune:#ead9bd;        /* Düne */
+  --sea:#2b6777;         /* Meer-Akzent */
+  --bd-desert:#e6ddcf;   /* zarte Border */
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --sand:#1b1914; --dune:#1f1c16; --sea:#7bc3d4; --bd-desert:#2f2a22;
+  }
+}
+body{
+  background:linear-gradient(180deg,var(--sand) 0%, var(--dune) 55%, #eff6f8 100%);
+}
+a{ color: var(--sea); }
+
+
+/* Mobile-friendly keynote */
+.keynote{max-width:62ch;margin:.75rem auto 1rem;text-align:center;line-height:1.5;padding:0 12px}
+@media (max-width:480px){.keynote{font-size:.98rem}}
+/* Responsive embeds */
+.responsive-frame{width:100%;aspect-ratio:16/9;border:0}
+
+
+/* Mini-Preview card for Basajaun */
+.mini-prev{display:flex;justify-content:center;margin:.5rem 0 1rem}
+.mini-card{display:grid;grid-template-columns:92px 1fr;gap:.6rem;align-items:center;
+  border:1px solid var(--bd-desert, #e9ecef);border-radius:12px;padding:.5rem .6rem;text-decoration:none;background:#ffffffdd}
+.mini-thumb{width:92px;height:58px;border-radius:8px;border:1px solid var(--bd-desert, #e9ecef);
+  background:linear-gradient(135deg,#e9d8b4,#d0c7ae);background-position:center;background-size:cover}
+.mini-card strong{display:block;font-size:.98rem}
+.mini-card span{display:block;font-size:.8rem;color:#6c757d}
+@media(prefers-color-scheme:dark){
+  .mini-card{background:#11161bdd;border-color:#2a2e33}
+  .mini-thumb{border-color:#2a2e33;background:linear-gradient(135deg,#4a3f30,#34302a)}
+  .mini-card span{color:#a5acb1}
+}
+
+
+/* FAB bottom-left (Basajaun) */
+.fab.bl-left{
+  position:fixed;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));z-index:9999;
+  display:inline-flex;align-items:center;gap:.4rem;padding:.55rem .8rem;border-radius:999px;border:1px solid var(--bd-desert, #e9ecef);
+  background:#ffffffe6;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.12);font-weight:600
+}
+.fab.bl-left:hover{transform:translateY(-1px)}
+@media(prefers-color-scheme:dark){
+  .fab.bl-left{background:#11161be6;border-color:#2a2e33;color:#e8ecef;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+}
+
+
+/* Komoot heading centered */
+.komoot h2{text-align:center}
+
+</style>
+<meta name="description" content="&quot;Die wilde Wüste Andalusiens: Wadis, Salzebenen, steinige Pistas – Wasser & Hitze als limitierende Faktoren. Durch Gorafe & Tabernas, entlang der Küste von Cabo de Gata und hinauf in die Sierra Nevada Richtung Pico Veleta (3.396 m). Start und Ziel in Granada: Wüste, Wind, Hitze – Wasser- und Zeitmanagement werden entscheiden.&quot;">
+
+<meta property="og:title" content="Badlands 2025 — Planung &amp; Strategie">
+<meta property="og:description" content="&quot;Die wilde Wüste Andalusiens: Wadis, Salzebenen, steinige Pistas – Wasser & Hitze als limitierende Faktoren. Durch Gorafe & Tabernas, entlang der Küste von Cabo de Gata und hinauf in die Sierra Nevada Richtung Pico Veleta (3.396 m). Start und Ziel in Granada: Wüste, Wind, Hitze – Wasser- und Zeitmanagement werden entscheiden.&quot;">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:image" content="banner_badlands.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Badlands 2025 — Planung &amp; Strategie">
+<meta name="twitter:description" content="&quot;Die wilde Wüste Andalusiens: Wadis, Salzebenen, steinige Pistas – Wasser & Hitze als limitierende Faktoren. Durch Gorafe & Tabernas, entlang der Küste von Cabo de Gata und hinauf in die Sierra Nevada Richtung Pico Veleta (3.396 m). Start und Ziel in Granada: Wüste, Wind, Hitze – Wasser- und Zeitmanagement werden entscheiden.&quot;">
+<meta name="twitter:image" content="banner_badlands.jpg">
+</head>
+<body>
+<div id=\"top\" aria-hidden=\"true\"></div>
+<a class="toc-left" href="#plan" aria-label="Zum Strategie-Teil">↙ <span>Strategie</span></a>
+
+<a class="toc-fab" href="#galerie" aria-label="Zur Galerie springen" title="Zur Galerie">↘ <span>Zur&nbsp;Galerie</span></a>
+
+  <header>
+    <img src="banner_badlands.jpg" alt="Bannerfoto Badlands">
+  </header>
+<h1><a href="https://www.badlands.cc">Badlands 2025</a></h1>
+<div class="keychips" id="kernaussagen">
+      <span class="chip">Distanz: &nbsp;<strong>821&nbsp;km</strong> </span>
+      <span class="chip">Höhenmeter: &nbsp;<strong>16.000&nbsp;m</strong></span>
+      <span class="chip">Untergrund: &nbsp;Sand · Schotter · Pistas</span>
+      <span class="chip">Temperatur: &nbsp;heiß · trocken · windanfällig</span>
+      <span class="chip">Nachschub: &nbsp;selten / unassisted · kaum Wasser</span></div>
+<p class="keynote"><em>&bdquo;Die wilde Wüste Andalusiens: Wadis, Salzebenen, steinige Pistas – Wasser &amp; Hitze als limitierende Faktoren. Durch Gorafe &amp; Tabernas, entlang der Küste von Cabo de Gata und hinauf in die Sierra Nevada Richtung Pico Veleta (3.396 m). Start und Ziel in Granada: Wüste, Wind, Hitze – Wasser- und Zeitmanagement werden entscheiden.&ldquo;</em></p>
+    
+
+    <h2>Live-GPS des Rennens und unseres Teams</h2>
+    <iframe class="responsive-frame" src="https://followmychallenge.com/live/badlands25/" title="Follow My Challenge Livetracking"></iframe>
+
+    <div class="komoot">
+      <h2>Die gesamte Strecke auf komoot</h2>
+      
+      
+      <iframe class="responsive-frame" src="https://www.komoot.com/de-de/tour/2298630558/embed?share_token=afCHiUeL9bU6hugOissPdCnGDIksV0zMvs4k4aSrRe8mprf5gu&ref=wtd" title="Komoot Basajaun Route"></iframe>
+    </div>
+
+    <h2 id="galerie">📸 Bildergalerie</h2>
+    <p style="font-size:0.9em;color:#6c757d;margin:-.5rem 0 0.5rem">Aktualisiert stündlich automatisch (Uploads per Google Drive).</p>
+    <div id="bildergalerie" class="bildergalerie"></div>
+    <p id="noImages" style="text-align: center; color: #999; display: none;">Noch keine Event-Bilder verfügbar.</p>
+    <p id="timestamp" style="font-size: 0.8em; color: #666;"></p>
+
+    <p style="text-align:center">🔥 Jeder digitale Gruß, jede Message – ihr seid unser Rückenwind!<br><strong>🚴 Robbie & Kike 🚴</strong></p>
+    <div id="counter"><img src="https://visitor-badge.laobi.icu/badge?page_id=enrique-doubleyou.basajaun" alt="Seitenaufrufe"></div>
+  
+    <section class="abschluss" id="plan">
+  <h2>Planung &amp; Strategie</h2>
+
+  <div>
+    <h3>Überblick</h3>
+    <ul class="badges">
+      <li><span>Start</span><strong>31.08.2025 · 08:00</strong></li>
+      <li><span>Distanz</span><strong>821&nbsp;km</strong></li>
+      <li><span>Höhenmeter</span><strong>16.000&nbsp;m</strong></li>
+      <li><span>Strategie</span><strong>3&nbsp;Tage, kein Schlafen, nur Powernaps</strong></li>
+      <li><span>Pacing</span><strong>60/35/30/20 km/h Caps</strong></li>
+      <li><span>Hydration</span><strong>Abschnitte 2–4,5&nbsp;l</strong></li>
+    </ul>
+  </div>
+
+  <details class="ab" open>
+    <summary>Pacing &amp; Terrain</summary>
+    <ul class="list">
+      <li>Downhills strikt: Asphalt ≤ 50–60; Gravel ≤ 35; Dirt ≤ 30; Sand ≤ 20 km/h.</li>
+      <li>Hitze-Management: Tempo bei >35 °C und in Wadis senken; Schatten/Siesta-Option.</li>
+      <li>Wind: exponierte Ebenen früh/abends fahren; Küstenbrise einplanen.</li>
+    </ul>
+  </details>
+
+  <details class="ab">
+    <summary>Setup (Bike &amp; Ausrüstung)</summary>
+    <div class="grid" role="list">
+      <div class="card" role="listitem">
+        <strong>Bike</strong>
+        <p style="margin:.2rem 0;color:#6c757d">Canyon Inflite CF SLX · Z45i21SL · Tufo Thundero · Tannus</p>
+        <ul class="list">
+          <li>Zielgewicht (ohne Wasser): ≤ 13&nbsp;kg</li>
+          <li>Reifen: Tufo Thundero 40–45&nbsp;mm</li>
+        </ul>
+      </div>
+      <div class="card" role="listitem">
+        <strong>Hydration</strong>
+        <ul class="list">
+          <li>Flaschen: 0,75&nbsp;l + 0,6&nbsp;l</li>
+          <li>Blase: 3&nbsp;l (Rucksack)</li>
+        </ul>
+      </div>
+      <div class="card" role="listitem">
+        <strong>Navigation</strong>
+        <ul class="list">
+          <li>Headunit: Garmin Edge 830</li>
+          <li>Backup: Powerbank + Handy in Top Tube</li>
+        </ul>
+      </div>
+    </div>
+  </details>
+
+  <details class="ab">
+    <summary>Schlaf &amp; Ernährung</summary>
+    <ul class="list">
+      <li>Strategie: 3&nbsp;Tage durchfahren, nur Powernaps (20–25&nbsp;min alle 4–5&nbsp;h); kein Schlafen im Bett.</li>
+      <li>Realfood unterwegs + Gels/Riegel/Elektrolyte; Kältemanagement für Getränke.</li>
+      <li>Wasserstrategie pro Abschnitt vorab markieren (Tanke, Supermarkt, Brunnen).</li>
+    </ul>
+  </details>
+</section>
+
+<section class="abschluss" id="abschluss">
+  <h2>Badlands Fazit</h2>
+  <div>
+    <h3>Überblick</h3>
+    <ul class="badges">
+      <li><span>Distanz</span><strong>—</strong></li>
+      <li><span>Höhenmeter</span><strong>—</strong></li>
+      <li><span>Bewegungszeit</span><strong>—</strong></li>
+      <li><span>Pausenzeit</span><strong>—</strong></li>
+      <li><span>Ø-Leistung</span><strong>—</strong></li>
+      <li><span>Kalorienverbrauch</span><strong>—</strong></li>
+      <li><span>Fett verbrannt</span><strong>—</strong></li>
+    </ul>
+  </div>
+  <details class="ab" open>
+    <summary>Lessons Learned (kurz)</summary>
+    <ul class="list"><li>–</li></ul>
+  </details>
+  <details class="ab">
+    <summary>Setup (Bike &amp; Ausrüstung)</summary>
+    <div class="grid" role="list"><div class="card" role="listitem"><strong>–</strong><ul class="list"><li>–</li></ul></div></div>
+  </details>
+  <details class="ab">
+    <summary>Ernährung &amp; Hydration (Kurzüberblick)</summary>
+    <ul class="list"><li>–</li></ul>
+  </details>
+  <details class="ab">
+    <summary>Downloads</summary>
+    <div class="downloads">
+      <a class="btn" href="marschtabelle.pdf" download>Marschtabelle (PDF)</a>
+      <a class="btn" href="etappenplan.csv" download>Etappenplan (CSV)</a>
+    </div>
+  </details>
+  <div class="footer-minor">
+    <div style="color:#6c757d">Fragen, Daten oder GPX? → <a href="mailto:enrique.doubleyou@gmail.com">enrique.doubleyou@gmail.com</a></div>
+  </div>
+</section>
+<div class="mini-prev" id="basajaun-prev">
+  <a class="mini-card" href="index.html" title="Zur Basajaun-Seite">
+    <div class="mini-thumb" style="background-image:url('banner_basajaun.jpg');"></div>
+    <div class="mini-meta">
+      <strong>Basajaun — Rückblick</strong>
+      <span>Galerie · Livetracking · Fazit</span>
+    </div>
+  </a>
+</div>
+
+</main>
+  <footer>&copy; 2025 Robbie & Kike</footer>
+
+
+
+<a class="totop-fab" href="#top" aria-label="Nach oben">↑ <span>Nach&nbsp;oben</span></a>
+
+<script>
+  // === Badlands Live-Galerie (Direct-Mode via Google Drive + Apps Script JSON Feed) ===
+  // Konfiguration
+  const FEED_URL = "YOUR_APPS_SCRIPT_WEBAPP_URL"; // z.B. https://script.google.com/macros/s/.../exec
+  const FIRST_LIMIT = 48;
+  const feedGrid = document.getElementById("bildergalerie");
+  const noteNoImages = document.getElementById("noImages");
+  const noteTs = document.getElementById("timestamp");
+  const seen = new Set();
+  let latest = localStorage.getItem("live.last") || "";
+
+  async function fetchFeed({since, limit}={}){
+    const params = new URLSearchParams();
+    if(since) params.set("since", since);
+    if(limit) params.set("limit", String(limit));
+    const url = FEED_URL + (params.toString() ? "?" + params.toString() : "");
+    const res = await fetch(url, {cache:"no-store"});
+    if(!res.ok) throw new Error("Feed HTTP " + res.status);
+    return await res.json();
+  }
+  function addItem(it, index){
+    if(!it || !it.id || seen.has(it.id)) return;
+    seen.add(it.id);
+    const wrap = document.createElement("div");
+    const link = document.createElement("a");
+    link.href = `#img${index}`;
+    const img = new Image();
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.alt = it.name || "";
+    img.src = it.thumbnailLink || it.viewUrl || it.downloadUrl;
+    link.appendChild(img);
+    wrap.appendChild(link);
+    feedGrid.appendChild(wrap);
+    // Lightbox target block
+    const lb = document.createElement("div");
+    lb.className = "lightbox";
+    lb.id = `img${index}`;
+    lb.innerHTML = `<a href="#" class="lightbox-close">&times;</a>
+                    <img src="${(it.viewUrl||it.downloadUrl||it.thumbnailLink).replace(/&/g,'&amp;')}" alt="Großansicht">`;
+    document.body.appendChild(lb);
+  }
+  async function initial(){
+    try{
+      const data = await fetchFeed({limit:FIRST_LIMIT});
+      const items = (data.items||[]).slice().reverse(); // älteste zuerst einfügen
+      items.forEach((it,i)=> addItem(it, i+1));
+      if(data.items && data.items[0]){
+        latest = data.items[0].modifiedTime;
+        localStorage.setItem("live.last", latest);
+        noteTs.textContent = "Letzte Aktualisierung: " + new Date(data.items[0].modifiedTime).toLocaleString("de-DE");
+      } else {
+        noteNoImages.style.display = "block";
+      }
+    }catch(e){
+      console.error(e);
+      noteNoImages.style.display = "block";
+    }
+  }
+  async function hourly(){
+    try{
+      const data = await fetchFeed({since: latest});
+      const startIdx = feedGrid.children.length + 1;
+      const items = (data.items||[]).slice().reverse();
+      items.forEach((it, j)=> addItem(it, startIdx + j));
+      if(data.items && data.items[0]){
+        latest = data.items[0].modifiedTime;
+        localStorage.setItem("live.last", latest);
+        noteTs.textContent = "Letzte Aktualisierung: " + new Date(data.items[0].modifiedTime).toLocaleString("de-DE");
+      }
+    }catch(e){ console.error(e); }
+  }
+  initial();
+  setInterval(hourly, 60*60*1000); // stündlich
+  document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) hourly(); });
+</script>
+
+
+<a class="fab bl-left" href="#basajaun-prev" aria-label="Zur Basajaun-Seite">← <span>Basajaun</span></a>
+</body>
+</html>
