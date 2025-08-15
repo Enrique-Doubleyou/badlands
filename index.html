@@ -64,24 +64,9 @@
       font-size: 0.9em;
       margin-top: 1em;
     }
-    .bildergalerie {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 2em;
-    }
-    .bildergalerie > div {
-      width: 150px;
-    }
-    .bildergalerie img {
-      width: 150px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 4px;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
+    .bildergalerie{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;justify-items:center;margin-bottom:2em}
+    .bildergalerie>div{width:100%}
+    .bildergalerie img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:6px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.1)}
     .lightbox {
       display: none;
       position: fixed;
@@ -178,7 +163,10 @@ background:#ffffff;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.12);fo
 }
 @media(prefers-color-scheme:dark){
   :root{
-    --sand:#1b1914; --dune:#1f1c16; --sea:#7bc3d4; --bd-desert:#2f2a22;
+    --sand:#242018;   /* heller Sand (dark) */
+    --dune:#2b251f;   /* Düne (dark) */
+    --sea:#7bc3d4;    /* Meer-Akzent bleibt */
+    --bd-desert:#3a3127; /* wärmere Border */
   }
 }
 body{
@@ -342,6 +330,19 @@ h2{ text-align:center; }
 @media (max-width:480px){
   .fab-pill span{ display:inline; }
   .fab-pill{ padding:.45rem .6rem; }
+}
+
+
+@media (max-width:360px){
+  .bildergalerie{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+}
+
+
+/* Dark-mode: lighter desert gradient */
+@media (prefers-color-scheme:dark){
+  body{
+    background:linear-gradient(180deg, var(--sand) 0%, var(--dune) 60%, #0f1418 100%);
+  }
 }
 
 </style>
