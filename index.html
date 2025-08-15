@@ -237,6 +237,98 @@ footer{ color: var(--muted-global); }
 .keynote{ color: var(--fg-global); } /* ensure readable in dark */
 #timestamp, #noImages{ color: var(--muted-global) !important; }
 
+
+/* Dark-mode: higher contrast for headings */
+@media (prefers-color-scheme:dark){
+  h1, h2 { color:#3aa0ff; }
+}
+
+
+/* Dark-mode: stronger contrast for top keychips */
+@media (prefers-color-scheme:dark){
+  .keychips .chip{
+    background:#141a1f;
+    border-color:#2a2e33;
+    color:var(--fg-global);
+  }
+  .keychips .chip strong{ color:var(--fg-global); }
+}
+
+
+/* Stacked top-right pills (Galerie/Strategie/Basajaun) */
+.fab-stack{
+  position:fixed;
+  right:max(12px, env(safe-area-inset-right));
+  top:max(12px, env(safe-area-inset-top));
+  z-index:9999;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.fab-pill{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.5rem .7rem;border-radius:999px;border:1px solid #e9ecef;
+  background:#ffffff;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.12);font-weight:600
+}
+.fab-pill:hover{transform:translateY(-1px)}
+.fab-pill:focus{outline:2px solid #1d3557;outline-offset:2px}
+@media (prefers-color-scheme:dark){
+  .fab-pill{background:#11161b;border-color:#2a2e33;color:#e8ecef;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+}
+@media (max-width:480px){.fab-pill span{display:none}}
+
+
+/* Prevent blue tap overlay and visited tint on mini preview */
+.mini-card, .mini-card:visited { color: inherit; }
+.mini-card{ -webkit-tap-highlight-color: rgba(0,0,0,0); }
+.mini-thumb{ -webkit-tap-highlight-color: rgba(0,0,0,0); }
+.mini-card:focus, .mini-card:active{ outline: none; box-shadow: none; }
+
+
+
+/* Mini-card Hover/Focus: Shadow Lift + Border Swap + Micro-Scale (B+C) */
+.mini-card{
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.mini-card:hover, .mini-card:focus-visible{
+  border-color: var(--sea);
+  box-shadow: 0 6px 22px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.12);
+  transform: translateY(-1px) scale(1.01);
+}
+@media (prefers-color-scheme:dark){
+  .mini-card:hover, .mini-card:focus-visible{
+    border-color: #3aa0ff;
+    box-shadow: 0 10px 28px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.35);
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .mini-card{ transition: border-color .15s ease, box-shadow .15s ease; }
+  .mini-card:hover, .mini-card:focus-visible{ transform:none; }
+}
+
+
+/* Reusable link-card (B+C effect) */
+.link-card{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.35rem .6rem;border-radius:10px;border:1px solid #e9ecef;
+  background:#ffffffcc;text-decoration:none;font-weight:600;
+  transition:border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.link-card:hover, .link-card:focus-visible{
+  border-color:var(--sea);
+  box-shadow:0 6px 22px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.12);
+  transform:translateY(-1px) scale(1.01);
+}
+@media (prefers-color-scheme:dark){
+  .link-card{background:#11161bcc;border-color:#2a2e33;color:#e8ecef}
+  .link-card:hover, .link-card:focus-visible{
+    border-color:#3aa0ff;
+    box-shadow:0 10px 28px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.35);
+  }
+}
+@media (max-width:480px){ .link-card{ padding:.3rem .55rem } }
+@media (prefers-reduced-motion:reduce){ .link-card{ transition:border-color .15s ease, box-shadow .15s ease; } }
+
 </style>
 <meta name="description" content="&quot;Die wilde Wüste Andalusiens: Wadis, Salzebenen, steinige Pistas – Wasser & Hitze als limitierende Faktoren. Durch Gorafe & Tabernas, entlang der Küste von Cabo de Gata und hinauf in die Sierra Nevada Richtung Pico Veleta (3.396 m). Start und Ziel in Granada: Wüste, Wind, Hitze – Wasser- und Zeitmanagement werden entscheiden.&quot;">
 
@@ -252,14 +344,16 @@ footer{ color: var(--muted-global); }
 </head>
 <body>
 <div id=\"top\" aria-hidden=\"true\"></div>
-<a class="toc-left" href="#plan" aria-label="Zum Strategie-Teil">↙ <span>Strategie</span></a>
-
-<a class="toc-fab" href="#galerie" aria-label="Zur Galerie springen" title="Zur Galerie">↘ <span>Zur&nbsp;Galerie</span></a>
+<div class="fab-stack" id="fab-stack">
+  <a class="fab-pill" href="#galerie" aria-label="Zur Galerie springen">↘ <span>Galerie</span></a>
+  <a class="fab-pill" href="#plan" aria-label="Zum Strategie-Teil">↙ <span>Strategie</span></a>
+  <a class="fab-pill" href="#basajaun-prev" aria-label="Zur Basajaun-Vorschau">← <span>Basajaun</span></a>
+</div>
 
   <header>
     <img src="banner_badlands.jpg" alt="Bannerfoto Badlands">
   </header>
-<h1><a href="https://www.badlands.cc">Badlands 2025</a></h1>
+<h1><a class="link-card link-card-title" href="https://www.badlands.cc">Badlands 2025</a></h1>
 <div class="keychips" id="kernaussagen">
       <span class="chip">Distanz: &nbsp;<strong>821&nbsp;km</strong> </span>
       <span class="chip">Höhenmeter: &nbsp;<strong>16.000&nbsp;m</strong></span>
@@ -270,17 +364,17 @@ footer{ color: var(--muted-global); }
     
 
     <h2>Live-GPS des Rennens und unseres Teams</h2>
-    <iframe class="responsive-frame" src="https://followmychallenge.com/live/badlands25/" title="Follow My Challenge Livetracking"></iframe>
+    <p id="fmc-action" style="margin:-.6rem 0 .6rem"><a class="link-card" href="https://followmychallenge.com/live/badlands25/" target="_blank" rel="noopener">Live-Tracking öffnen ↗</a></p><iframe class="responsive-frame" src="https://followmychallenge.com/live/badlands25/" title="Follow My Challenge Livetracking"></iframe>
 
     <div class="komoot">
       <h2>Die gesamte Strecke auf komoot</h2>
       
       
-      <iframe class="responsive-frame" src="https://www.komoot.com/de-de/tour/2298630558/embed?share_token=afCHiUeL9bU6hugOissPdCnGDIksV0zMvs4k4aSrRe8mprf5gu&ref=wtd" title="Komoot Basajaun Route"></iframe>
+      <p id="komoot-action" style="margin:-.6rem 0 .6rem"><a class="link-card" href="https://www.komoot.com/de-de/tour/2298630558?share_token=afCHiUeL9bU6hugOissPdCnGDIksV0zMvs4k4aSrRe8mprf5gu&ref=wtd" target="_blank" rel="noopener">Komoot-Tour öffnen ↗</a></p><iframe class="responsive-frame" src="https://www.komoot.com/de-de/tour/2298630558/embed?share_token=afCHiUeL9bU6hugOissPdCnGDIksV0zMvs4k4aSrRe8mprf5gu&ref=wtd" title="Komoot Basajaun Route"></iframe>
     </div>
 
     <h2 id="galerie">📸 Bildergalerie</h2>
-    <p style="font-size:0.9em;color:var(--muted-global);margin:-.5rem 0 0.5rem">Aktualisiert stündlich automatisch (Uploads per Google Drive).</p>
+    <p style="font-size:0.9em;color:var(--muted-global);margin:-.5rem 0 0.5rem">Aktualisiert stündlich automatisch</p>
     <div id="bildergalerie" class="bildergalerie"></div>
     <p id="noImages" style="text-align: center; color:var(--muted-global); display: none;">Noch keine Event-Bilder verfügbar.</p>
     <p id="timestamp" style="font-size: 0.8em; color:var(--muted-global);"></p>
@@ -480,8 +574,5 @@ footer{ color: var(--muted-global); }
   setInterval(hourly, 60*60*1000); // stündlich
   document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) hourly(); });
 </script>
-
-
-<a class="fab bl-left" href="#basajaun-prev" aria-label="Zur Basajaun-Seite">← <span>Basajaun</span></a>
 </body>
 </html>
