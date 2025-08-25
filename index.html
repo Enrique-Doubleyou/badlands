@@ -136,7 +136,7 @@
     .toc-fab{background:#11161b;border-color:#2a2e33;color:#e8ecef;box-shadow:0 6px 20px rgba(0,0,0,.5)}
   }
 /*===util===*/html{scroll-behavior:smooth}/*===abschluss-auto-theme===*/.abschluss{--bg:#ffffff;--fg:#212529;--muted:#6c757d;--acc:#1d3557;--bd:#e9ecef;--chip:#f8f9fa;--ok:#00b37a;--warn:#ffb020;--err:#ff5a5f;scroll-margin-top:80px}@media(prefers-color-scheme:dark){.abschluss{--bg:#0b0d10;--fg:#e8ecef;--muted:#9aa4ad;--acc:#3aa0ff;--bd:#24303a;--chip:#12171c}}
-/*===fab-top===*/.totop-fab{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));z-index:9999;display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .7rem;border-radius:999px;border:1px solid #e9ecef;background:#ffffff;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.12);font-weight:600}.totop-fab:hover{transform:translateY(-1px)}.totop-fab:focus{outline:2px solid #1d3557;outline-offset:2px}@media(prefers-color-scheme:dark){.totop-fab{background:#11161b;border-color:#2a2e33;color:#e8ecef;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+/*===fab-top===*/.totop-fab{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));z-index:9999;display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .7rem;border-radius:999px;border:1px solid #e9ecef;background:#ffffff;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.12);font-weight:600}.totop-fab:hover{transform:translateY(-1px)}.totop-fab:focus{outline:2px solid #1d3557;outline-offset:2px}@media(prefers-color-scheme:dark){.totop-fab{background:#11161b;border-color:#2a2e33;color:#e8ecef;box-shadow:0 6px 20px rgba(0,0,0,.5)}}
 
 /* Badlands Kernaussagen */
 .keychips{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin:.5rem 0 1rem}
@@ -333,9 +333,7 @@ h2{ text-align:center; }
 }
 
 
-@media (max-width:360px){
-  .bildergalerie{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
-}
+@media (max-width:360px){.bildergalerie{grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}}
 
 
 /* Dark-mode: lighter desert gradient */
@@ -374,6 +372,7 @@ h2{ text-align:center; }
   <header>
     <img src="banner_badlands.jpg" alt="Bannerfoto Badlands">
   </header>
+<main>
 <h1><a class="link-card link-card-title" href="https://www.badlands.cc">Badlands 2025</a></h1>
 <div class="keychips" id="kernaussagen">
       <span class="chip">Distanz: &nbsp;<strong>821&nbsp;km</strong> </span>
@@ -520,17 +519,21 @@ h2{ text-align:center; }
   // Konfiguration
   const FEED_URL = new URLSearchParams(location.search).get("feed") || "https://script.google.com/macros/s/AKfycbwyetJ-yt_MGJuUthlgD1f_V-i8hdU2mJNG9YlP2cyejZjfpK-R_KLP-jZXszBHvL-V/exec"; // z.B. https://script.google.com/macros/s/.../exec
   const FIRST_LIMIT = 48;
+  
   function escUrl(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
   function thumbUrl(s){ return s ? s.replace(/=s\d+$/, '=s360') : s; }
-  function isVideo(it){ return it && it.mimeType && it.mimeType.startsWith("video/"); }
-  function fullUrl(it){
-    if (isVideo(it)) return it.downloadUrl || it.viewUrl || it.thumbnailLink || "";
-    if (it && it.thumbnailLink) return it.thumbnailLink.replace(/=s\d+$/, '=s1600');
-    if (it && it.downloadUrl) return it.downloadUrl;
-    return it ? (it.viewUrl || "") : "";
+  
+  function isVideo(it){ return it && it.mimeType && it.mimeType.startsWith('video/'); }
+function fullUrl(it){
+  if (it && it.mimeType && it.mimeType.startsWith('video/')) {
+    return it.downloadUrl || it.viewUrl || it.thumbnailLink || '';
   }
+  if (it && it.thumbnailLink) return it.thumbnailLink.replace(/=s\d+$/, '=s1600');
+  if (it && it.downloadUrl) return it.downloadUrl;
+  return it ? (it.viewUrl || '') : '';
+}
 
-  const feedGrid = document.getElementById("bildergalerie");
+const feedGrid = document.getElementById("bildergalerie");
   const noteNoImages = document.getElementById("noImages");
   const noteTs = document.getElementById("timestamp");
   const seen = new Set();
@@ -549,8 +552,7 @@ h2{ text-align:center; }
     if(!it || !it.id || seen.has(it.id)) return;
     seen.add(it.id);
     const wrap = document.createElement("div");
-    const link = document.createElement("a");
-    link.href = `#img${index}`;
+    const link = document.createElement("a"); link.href = `#img${index}`;
     const img = new Image();
     img.loading = "lazy";
     img.decoding = "async";
@@ -565,25 +567,21 @@ h2{ text-align:center; }
     lb.id = `img${index}`;
     lb.innerHTML = `<a href="#" class="lightbox-close">&times;</a>` +
   (isVideo(it)
-    ? `<video controls playsinline style="max-width:90vw;max-height:90vh;outline:none;background:#000">
-         <source src="${escUrl(fullUrl(it))}" type="${it.mimeType||"video/mp4"}">
-       </video>
-       <div style="text-align:center;margin-top:.4rem">
-         <a href="${escUrl(it.viewUrl||it.downloadUrl||"")}" target="_blank" rel="noopener">Im neuen Tab öffnen ↗</a>
-       </div>`
+    ? `<video controls playsinline style="max-width:90vw;max-height:90vh;outline:none;background:#000">\n         <source src="${escUrl(fullUrl(it))}" type="${it.mimeType||'video/mp4'}">\n       </video>\n       <div style="text-align:center;margin-top:.4rem">\n         <a href="${escUrl(it.viewUrl||it.downloadUrl||'')}" target="_blank" rel="noopener">Im neuen Tab öffnen ↗</a>\n       </div>`
     : `<img src="${escUrl(fullUrl(it))}" alt="Großansicht">`
   );
-document.body.appendChild(lb);
-// No-hash lightbox (prevents jump-to-top)
-link.addEventListener("click", (ev)=>{ ev.preventDefault(); lb.style.display="flex"; document.body.style.overflow="hidden"; });
-lb.querySelector(".lightbox-close").addEventListener("click", (ev)=>{ ev.preventDefault(); lb.style.display="none"; document.body.style.overflow=""; });
-lb.addEventListener("click", (ev)=>{ if(ev.target===lb){ lb.style.display="none"; document.body.style.overflow=""; } });
-document.addEventListener("keydown", (ev)=>{ if(ev.key==="Escape" && lb.style.display==="flex"){ lb.style.display="none"; document.body.style.overflow=""; } });
-  }
+    document.body.appendChild(lb);
+// No-hash open/close to avoid scroll jump
+link.addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="flex"; document.body.style.overflow="hidden"; });
+const closeEl = lb.querySelector(".lightbox-close");
+if(closeEl){ closeEl.addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="none"; document.body.style.overflow=""; }); }
+lb.addEventListener("click",(ev)=>{ if(ev.target===lb){ lb.style.display="none"; document.body.style.overflow=""; } });
+document.addEventListener("keydown",(ev)=>{ if(ev.key==="Escape" && lb.style.display==="flex"){ lb.style.display="none"; document.body.style.overflow=""; } });
+}
   async function initial(){
     try{
       const data = await fetchFeed({limit:FIRST_LIMIT});
-      const items = (data.items||[]).slice().reverse(); // älteste zuerst einfügen
+      const items = (data.items||[]).filter(it => !it.mimeType || it.mimeType.startsWith("image/") || it.mimeType.startsWith("video/")).slice().reverse(); // älteste zuerst einfügen
       items.forEach((it,i)=> addItem(it, i+1));
       if(data.items && data.items[0]){
         latest = data.items[0].modifiedTime;
@@ -601,7 +599,7 @@ document.addEventListener("keydown", (ev)=>{ if(ev.key==="Escape" && lb.style.di
     try{
       const data = await fetchFeed({since: latest});
       const startIdx = feedGrid.children.length + 1;
-      const items = (data.items||[]).slice().reverse();
+      const items = (data.items||[]).filter(it => !it.mimeType || it.mimeType.startsWith("image/") || it.mimeType.startsWith("video/")).slice().reverse();
       items.forEach((it, j)=> addItem(it, startIdx + j));
       if(data.items && data.items[0]){
         latest = data.items[0].modifiedTime;
@@ -615,18 +613,29 @@ document.addEventListener("keydown", (ev)=>{ if(ev.key==="Escape" && lb.style.di
   document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) hourly(); });
 </script>
 
+
+
+
 <script>
 (async function loadPlan(){
-  let cfg=null;
-  try{
-    const res = await fetch("plan.json", {cache:"no-store"});
-    if(!res.ok) throw new Error("HTTP "+res.status);
-    cfg = await res.json();
-  }catch(e){ console.warn("plan.json not loaded:", e); return; }
+  let cfg=null; let lastErr=null;
+  const planParam = new URLSearchParams(location.search).get('plan');
+  const candidates = planParam ? [planParam] : ['plan_v2.json','plan.json'];
+  for(const url of candidates){
+    try{
+      const res = await fetch(url, {cache:'no-store'});
+      if(!res.ok) { lastErr = new Error('HTTP '+res.status+' @ '+url); continue; }
+      cfg = await res.json();
+      console.log('Loaded plan config from', url);
+      break;
+    }catch(e){ lastErr = e; }
+  }
+  if(!cfg){ console.warn('plan.json not loaded:', lastErr); return; }
 
   const $ = (s, r=document)=>r.querySelector(s);
   const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
 
+  // === Site-wide texts ===
   if(cfg.site){
     if(cfg.site.keynote){ const kn=$(".keynote"); if(kn) kn.innerHTML=`<em>${cfg.site.keynote}</em>`; }
     if(Array.isArray(cfg.site.keychips)){ const kc=$("#kernaussagen"); if(kc){ kc.innerHTML = cfg.site.keychips.map(ch=>`<span class="chip">${ch.label}: &nbsp;<strong>${ch.value}</strong></span>`).join(""); } }
@@ -635,6 +644,7 @@ document.addEventListener("keydown", (ev)=>{ if(ev.key==="Escape" && lb.style.di
     if(cfg.site.basajaun && cfg.site.basajaun.meta){ const span=$("#basajaun-prev .mini-card span"); if(span) span.textContent = cfg.site.basajaun.meta; }
   }
 
+  // === Planung & Strategie ===
   const plan = $("#plan");
   if(plan && cfg.plan){
     if(cfg.plan.overview){ const bd=$("ul.badges", plan); if(bd){ const ov=cfg.plan.overview, m=(l,v)=>v?`<li><span>${l}</span><strong>${v}</strong></li>`:""; bd.innerHTML=[m("Start",ov.start),m("Distanz",ov.distanz),m("Höhenmeter",ov.hm),m("Strategie",ov.strategie),m("Pacing",ov.pacing),m("Hydration",ov.hydration)].filter(Boolean).join(""); } }
@@ -655,7 +665,13 @@ document.addEventListener("keydown", (ev)=>{ if(ev.key==="Escape" && lb.style.di
           const lb=document.createElement("div"); lb.className="lightbox"; lb.id=aid;
           lb.innerHTML=`<a href="#" class="lightbox-close">&times;</a><img src="${(m.src||'').replace(/&/g,'&amp;')}" alt="${(m.alt||'').replace(/"/g,'&quot;')}">`;
           document.body.appendChild(lb);
-          a.addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="flex"; document.body.style.overflow="hidden"; });
+// No-hash open/close to avoid scroll jump
+link.addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="flex"; document.body.style.overflow="hidden"; });
+const closeEl = lb.querySelector(".lightbox-close");
+if(closeEl){ closeEl.addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="none"; document.body.style.overflow=""; }); }
+lb.addEventListener("click",(ev)=>{ if(ev.target===lb){ lb.style.display="none"; document.body.style.overflow=""; } });
+document.addEventListener("keydown",(ev)=>{ if(ev.key==="Escape" && lb.style.display==="flex"){ lb.style.display="none"; document.body.style.overflow=""; } });
+a.addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="flex"; document.body.style.overflow="hidden"; });
           lb.addEventListener("click",(ev)=>{ if(ev.target===lb){ lb.style.display="none"; document.body.style.overflow=""; } });
           lb.querySelector(".lightbox-close").addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="none"; document.body.style.overflow=""; });
           fig.appendChild(a); grid.appendChild(fig);
@@ -665,7 +681,8 @@ document.addEventListener("keydown", (ev)=>{ if(ev.key==="Escape" && lb.style.di
     if(details[2] && Array.isArray(cfg.plan.sleep_nutrition)){ const ul=$("ul.list", details[2]); if(ul) ul.innerHTML = cfg.plan.sleep_nutrition.map(t=>`<li>${t}</li>`).join(""); }
   }
 
-  const fazit=document.querySelector("#abschluss");
+  // === Badlands Fazit ===
+  const fazit=$("#abschluss");
   if(fazit && cfg.fazit){
     if(cfg.fazit.overview){ const bd=fazit.querySelector("ul.badges"), ov=cfg.fazit.overview, m=(l,v)=>`<li><span>${l}</span><strong>${v||"—"}</strong></li>`; if(bd) bd.innerHTML=[m("Distanz",ov.distanz),m("Höhenmeter",ov.hm),m("Bewegungszeit",ov.bewegungszeit),m("Pausenzeit",ov.pausenzeit),m("Ø-Leistung",ov.o_leistung),m("Kalorienverbrauch",ov.kcal),m("Fett verbrannt",ov.fett)].join(""); }
     if(Array.isArray(cfg.fazit.lessons)){ const ul=fazit.querySelector("details.ab:nth-of-type(1) ul.list"); if(ul) ul.innerHTML = cfg.fazit.lessons.map(t=>`<li>${t}</li>`).join(""); }
