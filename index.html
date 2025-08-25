@@ -64,7 +64,7 @@
       font-size: 0.9em;
       margin-top: 1em;
     }
-    .bildergalerie{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;justify-items:center;margin-bottom:2em}
+    .bildergalerie{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;justify-items:center;margin-bottom:2em}
     .bildergalerie>div{width:100%}
     .bildergalerie img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:6px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.1)}
     .lightbox {
@@ -333,9 +333,7 @@ h2{ text-align:center; }
 }
 
 
-@media (max-width:360px){
-  .bildergalerie{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
-}
+@media (max-width:360px){.bildergalerie{grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}}
 
 
 /* Dark-mode: lighter desert gradient */
@@ -513,7 +511,21 @@ h2{ text-align:center; }
   // Konfiguration
   const FEED_URL = new URLSearchParams(location.search).get("feed") || "https://script.google.com/macros/s/AKfycbwyetJ-yt_MGJuUthlgD1f_V-i8hdU2mJNG9YlP2cyejZjfpK-R_KLP-jZXszBHvL-V/exec"; // z.B. https://script.google.com/macros/s/.../exec
   const FIRST_LIMIT = 48;
-  const feedGrid = document.getElementById("bildergalerie");
+  
+  function escUrl(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+  function thumbUrl(s){ return s ? s.replace(/=s\d+$/, '=s360') : s; }
+  
+  function isVideo(it){ return it && it.mimeType && it.mimeType.startsWith('video/'); }
+function fullUrl(it){
+  if (it && it.mimeType && it.mimeType.startsWith('video/')) {
+    return it.downloadUrl || it.viewUrl || it.thumbnailLink || '';
+  }
+  if (it && it.thumbnailLink) return it.thumbnailLink.replace(/=s\d+$/, '=s1600');
+  if (it && it.downloadUrl) return it.downloadUrl;
+  return it ? (it.viewUrl || '') : '';
+}
+
+const feedGrid = document.getElementById("bildergalerie");
   const noteNoImages = document.getElementById("noImages");
   const noteTs = document.getElementById("timestamp");
   const seen = new Set();
@@ -538,7 +550,7 @@ h2{ text-align:center; }
     img.loading = "lazy";
     img.decoding = "async";
     img.alt = it.name || "";
-    img.src = it.thumbnailLink || it.viewUrl || it.downloadUrl;
+    img.src = thumbUrl(it.thumbnailLink) || it.downloadUrl || it.viewUrl;
     link.appendChild(img);
     wrap.appendChild(link);
     feedGrid.appendChild(wrap);
@@ -546,14 +558,17 @@ h2{ text-align:center; }
     const lb = document.createElement("div");
     lb.className = "lightbox";
     lb.id = `img${index}`;
-    lb.innerHTML = `<a href="#" class="lightbox-close">&times;</a>
-                    <img src="${(it.viewUrl||it.downloadUrl||it.thumbnailLink).replace(/&/g,'&amp;')}" alt="Großansicht">`;
+    lb.innerHTML = `<a href="#" class="lightbox-close">&times;</a>` +
+  (isVideo(it)
+    ? `<video controls playsinline style="max-width:90vw;max-height:90vh;outline:none;background:#000">\n         <source src="${escUrl(fullUrl(it))}" type="${it.mimeType||'video/mp4'}">\n       </video>\n       <div style="text-align:center;margin-top:.4rem">\n         <a href="${escUrl(it.viewUrl||it.downloadUrl||'')}" target="_blank" rel="noopener">Im neuen Tab öffnen ↗</a>\n       </div>`
+    : `<img src="${escUrl(fullUrl(it))}" alt="Großansicht">`
+  );
     document.body.appendChild(lb);
   }
   async function initial(){
     try{
       const data = await fetchFeed({limit:FIRST_LIMIT});
-      const items = (data.items||[]).slice().reverse(); // älteste zuerst einfügen
+      const items = (data.items||[]).filter(it => !it.mimeType || it.mimeType.startsWith("image/")).slice().reverse(); // älteste zuerst einfügen
       items.forEach((it,i)=> addItem(it, i+1));
       if(data.items && data.items[0]){
         latest = data.items[0].modifiedTime;
@@ -571,7 +586,7 @@ h2{ text-align:center; }
     try{
       const data = await fetchFeed({since: latest});
       const startIdx = feedGrid.children.length + 1;
-      const items = (data.items||[]).slice().reverse();
+      const items = (data.items||[]).filter(it => !it.mimeType || it.mimeType.startsWith("image/")).slice().reverse();
       items.forEach((it, j)=> addItem(it, startIdx + j));
       if(data.items && data.items[0]){
         latest = data.items[0].modifiedTime;
