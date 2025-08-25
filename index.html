@@ -460,7 +460,7 @@ h2{ text-align:center; }
   </details>
 </section>
 
-<section class="abschluss" id="abschluss">
+<section class="abschluss" id="abschluss" style="display:none">
   <h2>Badlands Fazit</h2>
   <div>
     <h3>Überblick</h3>
@@ -493,8 +493,6 @@ h2{ text-align:center; }
       <a class="btn" href="etappenplan.csv" download>Etappenplan (CSV)</a>
     </div>
   </details>
-  <div class="footer-minor">
-    <div style="color:var(--muted-global)">Fragen, Daten oder GPX? → <a href="mailto:enrique.doubleyou@gmail.com">enrique.doubleyou@gmail.com</a></div>
   </div>
 </section>
 <div class="mini-prev" id="basajaun-prev">
@@ -508,7 +506,9 @@ h2{ text-align:center; }
 </div>
 
 </main>
-  <footer>&copy; 2025 Robbie & Kike</footer>
+  <footer>&copy; 2025 Robbie & Kike
+  <div id="footer-contact" style="margin-top:.4rem;color:var(--muted-global)">Fragen, Daten oder GPX? → <a href="mailto:enrique.doubleyou@gmail.com">enrique.doubleyou@gmail.com</a></div>
+</footer>
 
 
 
@@ -640,7 +640,12 @@ document.addEventListener("keydown",(ev)=>{ if(ev.key==="Escape" && lb.style.dis
     if(cfg.site.keynote){ const kn=$(".keynote"); if(kn) kn.innerHTML=`<em>${cfg.site.keynote}</em>`; }
     if(Array.isArray(cfg.site.keychips)){ const kc=$("#kernaussagen"); if(kc){ kc.innerHTML = cfg.site.keychips.map(ch=>`<span class="chip">${ch.label}: &nbsp;<strong>${ch.value}</strong></span>`).join(""); } }
     if(cfg.site.team && cfg.site.team.shout){ const p=Array.from(document.querySelectorAll("p")).find(x=>x.textContent.includes("Rückenwind")); if(p){ const n=cfg.site.team.names||"🚴 Robbie & Kike 🚴"; p.innerHTML=`${cfg.site.team.shout}<br><strong>${n}</strong>`; } }
-    if(cfg.site.contact && cfg.site.contact.email){ const fm=$("#abschluss .footer-minor div"); if(fm){ fm.innerHTML=`Fragen, Daten oder GPX? → <a href="mailto:${cfg.site.contact.email}">${cfg.site.contact.email}</a>`; } }
+    if(cfg.site.contact && cfg.site.contact.email){
+  const fm = document.querySelector("#abschluss .footer-minor div");
+  if(fm){ fm.innerHTML = `Fragen, Daten oder GPX? → <a href="mailto:${cfg.site.contact.email}">${cfg.site.contact.email}</a>`; }
+  const fc = document.getElementById("footer-contact");
+  if(fc){ fc.innerHTML = `Fragen, Daten oder GPX? → <a href="mailto:${cfg.site.contact.email}">${cfg.site.contact.email}</a>`; }
+}">${cfg.site.contact.email}</a>`; } }
     if(cfg.site.basajaun && cfg.site.basajaun.meta){ const span=$("#basajaun-prev .mini-card span"); if(span) span.textContent = cfg.site.basajaun.meta; }
   }
 
