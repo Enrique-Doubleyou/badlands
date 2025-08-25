@@ -2,42 +2,23 @@
   "site": {
     "keynote": "„Die wilde Wüste Andalusiens: Wadis, Salzebenen, steinige Pistas – Wasser & Hitze als limitierende Faktoren. Durch Gorafe & Tabernas, entlang der Küste von Cabo de Gata und hinauf in die Sierra Nevada Richtung Pico Veleta (3.396 m). Start und Ziel in Granada: Wüste, Wind, Hitze – Wasser- und Zeitmanagement werden entscheiden.“",
     "keychips": [
-      {
-        "label": "Distanz",
-        "value": "820 km"
-      },
-      {
-        "label": "Höhenmeter",
-        "value": "16.000 m"
-      },
-      {
-        "label": "Untergrund",
-        "value": "Sand · Schotter · Pistas"
-      },
-      {
-        "label": "Temperatur",
-        "value": "heiß · trocken · windanfällig"
-      },
-      {
-        "label": "Nachschub",
-        "value": "selten / unassisted · kaum Wasser"
-      }
+      { "label": "Distanz", "value": "820 km" },
+      { "label": "Höhenmeter", "value": "16.000 m" },
+      { "label": "Untergrund", "value": "Sand · Schotter · Pistas" },
+      { "label": "Temperatur", "value": "heiß · trocken · windanfällig" },
+      { "label": "Nachschub", "value": "selten / unassisted · kaum Wasser" }
     ],
     "team": {
       "shout": "🔥 Jeder digitale Gruß, jede Message – ihr seid unser Rückenwind!",
       "names": "🚴 Robbie & Kike 🚴"
     },
-    "contact": {
-      "email": "enrique.doubleyou@gmail.com"
-    },
-    "basajaun": {
-      "meta": "Galerie · Livetracking · Fazit"
-    }
+    "contact": { "email": "enrique.doubleyou@gmail.com" },
+    "basajaun": { "meta": "Galerie · Livetracking · Fazit" }
   },
   "plan": {
     "overview": {
       "start": "31.08.2025 · 08:00",
-      "distanz": "821 km",
+      "distanz": "820 km",
       "hm": "16.000 m",
       "strategie": "kein Schlafen, nur Powernaps",
       "pacing": "60/35/30/20 km/h Caps",
@@ -52,27 +33,19 @@
       "bike_meta": "Canyon Inflite CF SLX · Z45i21SL · Tufo Thundero · Tannus",
       "bike_points": [
         "Zielgewicht (ohne Wasser): ≤ 13 kg",
-        "Reifen: Tufo Thundero 40 + 48 mm"
+        "Reifen: Tufo Thundero 40–48 mm"
       ],
       "hydration_points": [
         "Flaschen: 0,62 l + 0,62 l",
         "Blase: 3 l (Rucksack)"
       ],
       "nav_points": [
-        "Headunit: Garmin Edge 830",
+        "Headunit: Garmin Edge 1040",
         "Backup: Powerbank + Handy in Top Tube"
       ],
       "media": [
-        {
-          "src": "setup1.jpg",
-          "alt": "Bike-Pack Setup links",
-          "caption": "Bike-Pack · links"
-        },
-        {
-          "src": "setup2.jpg",
-          "alt": "Bike-Pack Setup rechts",
-          "caption": "Bike-Pack · rechts"
-        }
+        { "src": "setup1.jpg", "alt": "Bike-Pack Setup links", "caption": "Bike-Pack · links" },
+        { "src": "setup2.jpg", "alt": "Bike-Pack Setup rechts", "caption": "Bike-Pack · rechts" }
       ]
     },
     "sleep_nutrition": [
@@ -82,6 +55,7 @@
     ]
   },
   "fazit": {
+    "visible": false,
     "overview": {
       "distanz": "—",
       "hm": "—",
@@ -91,19 +65,10 @@
       "kcal": "—",
       "fett": "—"
     },
-    "lessons": [
-      "–"
-    ],
+    "lessons": [ "–" ],
     "setup_cards": [
-      {
-        "title": "—",
-        "items": [
-          "–"
-        ]
-      }
+      { "title": "—", "items": [ "–" ] }
     ],
-    "nutrition": [
-      "–"
-    ]
+    "nutrition": [ "–" ]
   }
 }
