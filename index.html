@@ -136,7 +136,7 @@
     .toc-fab{background:#11161b;border-color:#2a2e33;color:#e8ecef;box-shadow:0 6px 20px rgba(0,0,0,.5)}
   }
 /*===util===*/html{scroll-behavior:smooth}/*===abschluss-auto-theme===*/.abschluss{--bg:#ffffff;--fg:#212529;--muted:#6c757d;--acc:#1d3557;--bd:#e9ecef;--chip:#f8f9fa;--ok:#00b37a;--warn:#ffb020;--err:#ff5a5f;scroll-margin-top:80px}@media(prefers-color-scheme:dark){.abschluss{--bg:#0b0d10;--fg:#e8ecef;--muted:#9aa4ad;--acc:#3aa0ff;--bd:#24303a;--chip:#12171c}}
-/*===fab-top===*/.totop-fab{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));z-index:9999;display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .7rem;border-radius:999px;border:1px solid #e9ecef;background:#ffffff;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.12);font-weight:600}.totop-fab:hover{transform:translateY(-1px)}.totop-fab:focus{outline:2px solid #1d3557;outline-offset:2px}@media(prefers-color-scheme:dark){.totop-fab{background:#11161b;border-color:#2a2e33;color:#e8ecef;box-shadow:0 6px 20px rgba(0,0,0,.5)}}
+/*===fab-top===*/.totop-fab{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));z-index:9999;display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .7rem;border-radius:999px;border:1px solid #e9ecef;background:#ffffff;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.12);font-weight:600}.totop-fab:hover{transform:translateY(-1px)}.totop-fab:focus{outline:2px solid #1d3557;outline-offset:2px}@media(prefers-color-scheme:dark){.totop-fab{background:#11161b;border-color:#2a2e33;color:#e8ecef;box-shadow:0 6px 20px rgba(0,0,0,.5)}
 
 /* Badlands Kernaussagen */
 .keychips{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin:.5rem 0 1rem}
@@ -333,7 +333,9 @@ h2{ text-align:center; }
 }
 
 
-@media (max-width:360px){.bildergalerie{grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}}
+@media (max-width:360px){
+  .bildergalerie{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+}
 
 
 /* Dark-mode: lighter desert gradient */
@@ -518,21 +520,17 @@ h2{ text-align:center; }
   // Konfiguration
   const FEED_URL = new URLSearchParams(location.search).get("feed") || "https://script.google.com/macros/s/AKfycbwyetJ-yt_MGJuUthlgD1f_V-i8hdU2mJNG9YlP2cyejZjfpK-R_KLP-jZXszBHvL-V/exec"; // z.B. https://script.google.com/macros/s/.../exec
   const FIRST_LIMIT = 48;
-  
   function escUrl(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
   function thumbUrl(s){ return s ? s.replace(/=s\d+$/, '=s360') : s; }
-  
-  function isVideo(it){ return it && it.mimeType && it.mimeType.startsWith('video/'); }
-function fullUrl(it){
-  if (it && it.mimeType && it.mimeType.startsWith('video/')) {
-    return it.downloadUrl || it.viewUrl || it.thumbnailLink || '';
+  function isVideo(it){ return it && it.mimeType && it.mimeType.startsWith("video/"); }
+  function fullUrl(it){
+    if (isVideo(it)) return it.downloadUrl || it.viewUrl || it.thumbnailLink || "";
+    if (it && it.thumbnailLink) return it.thumbnailLink.replace(/=s\d+$/, '=s1600');
+    if (it && it.downloadUrl) return it.downloadUrl;
+    return it ? (it.viewUrl || "") : "";
   }
-  if (it && it.thumbnailLink) return it.thumbnailLink.replace(/=s\d+$/, '=s1600');
-  if (it && it.downloadUrl) return it.downloadUrl;
-  return it ? (it.viewUrl || '') : '';
-}
 
-const feedGrid = document.getElementById("bildergalerie");
+  const feedGrid = document.getElementById("bildergalerie");
   const noteNoImages = document.getElementById("noImages");
   const noteTs = document.getElementById("timestamp");
   const seen = new Set();
@@ -567,15 +565,25 @@ const feedGrid = document.getElementById("bildergalerie");
     lb.id = `img${index}`;
     lb.innerHTML = `<a href="#" class="lightbox-close">&times;</a>` +
   (isVideo(it)
-    ? `<video controls playsinline style="max-width:90vw;max-height:90vh;outline:none;background:#000">\n         <source src="${escUrl(fullUrl(it))}" type="${it.mimeType||'video/mp4'}">\n       </video>\n       <div style="text-align:center;margin-top:.4rem">\n         <a href="${escUrl(it.viewUrl||it.downloadUrl||'')}" target="_blank" rel="noopener">Im neuen Tab öffnen ↗</a>\n       </div>`
+    ? `<video controls playsinline style="max-width:90vw;max-height:90vh;outline:none;background:#000">
+         <source src="${escUrl(fullUrl(it))}" type="${it.mimeType||"video/mp4"}">
+       </video>
+       <div style="text-align:center;margin-top:.4rem">
+         <a href="${escUrl(it.viewUrl||it.downloadUrl||"")}" target="_blank" rel="noopener">Im neuen Tab öffnen ↗</a>
+       </div>`
     : `<img src="${escUrl(fullUrl(it))}" alt="Großansicht">`
   );
-    document.body.appendChild(lb);
+document.body.appendChild(lb);
+// No-hash lightbox (prevents jump-to-top)
+link.addEventListener("click", (ev)=>{ ev.preventDefault(); lb.style.display="flex"; document.body.style.overflow="hidden"; });
+lb.querySelector(".lightbox-close").addEventListener("click", (ev)=>{ ev.preventDefault(); lb.style.display="none"; document.body.style.overflow=""; });
+lb.addEventListener("click", (ev)=>{ if(ev.target===lb){ lb.style.display="none"; document.body.style.overflow=""; } });
+document.addEventListener("keydown", (ev)=>{ if(ev.key==="Escape" && lb.style.display==="flex"){ lb.style.display="none"; document.body.style.overflow=""; } });
   }
   async function initial(){
     try{
       const data = await fetchFeed({limit:FIRST_LIMIT});
-      const items = (data.items||[]).filter(it => !it.mimeType || it.mimeType.startsWith("image/")).slice().reverse(); // älteste zuerst einfügen
+      const items = (data.items||[]).slice().reverse(); // älteste zuerst einfügen
       items.forEach((it,i)=> addItem(it, i+1));
       if(data.items && data.items[0]){
         latest = data.items[0].modifiedTime;
@@ -593,7 +601,7 @@ const feedGrid = document.getElementById("bildergalerie");
     try{
       const data = await fetchFeed({since: latest});
       const startIdx = feedGrid.children.length + 1;
-      const items = (data.items||[]).filter(it => !it.mimeType || it.mimeType.startsWith("image/")).slice().reverse();
+      const items = (data.items||[]).slice().reverse();
       items.forEach((it, j)=> addItem(it, startIdx + j));
       if(data.items && data.items[0]){
         latest = data.items[0].modifiedTime;
@@ -607,119 +615,62 @@ const feedGrid = document.getElementById("bildergalerie");
   document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) hourly(); });
 </script>
 
-<script id="plan-config" type="application/json">
-{
-  "overview": {
-    "start": "31.08.2025 · 08:00",
-    "distanz": "821 km",
-    "hm": "16.000 m",
-    "strategie": "3 Tage, kein Schlafen, nur Powernaps",
-    "pacing": "60/35/30/20 km/h Caps",
-    "hydration": "Abschnitte 2–4,5 l"
-  },
-  "sections": {
-    "pacing": [
-      "Downhills strikt: Asphalt ≤ 50–60; Gravel ≤ 35; Dirt ≤ 30; Sand ≤ 20 km/h.",
-      "Hitze-Management: Tempo bei >35 °C und in Wadis senken; Schatten/Siesta-Option.",
-      "Wind: exponierte Ebenen früh/abends fahren; Küstenbrise einplanen."
-    ],
-    "sleep": [
-      "Strategie: 3 Tage durchfahren, nur Powernaps (20–25 min alle 4–5 h); kein Schlafen im Bett.",
-      "Realfood unterwegs + Gels/Riegel/Elektrolyte; Kältemanagement für Getränke.",
-      "Wasserstrategie pro Abschnitt vorab markieren (Tanke, Supermarkt, Brunnen)."
-    ]
-  },
-  "setupMedia": [
-    {
-      "src": "setup1.jpg",
-      "alt": "Bike-Pack Setup links",
-      "caption": "Bike-Pack · links"
-    },
-    {
-      "src": "setup2.jpg",
-      "alt": "Bike-Pack Setup rechts",
-      "caption": "Bike-Pack · rechts"
-    }
-  ]
-}
-</script>
-
 <script>
-(function(){
-  const cfgEl = document.getElementById("plan-config");
-  if(!cfgEl) return;
-  let cfg = {};
-  try{ cfg = JSON.parse(cfgEl.textContent || "{}"); }catch(e){ console.warn("Plan config JSON parse error", e); return; }
+(async function loadPlan(){
+  let cfg=null;
+  try{
+    const res = await fetch("plan.json", {cache:"no-store"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    cfg = await res.json();
+  }catch(e){ console.warn("plan.json not loaded:", e); return; }
 
-  // === Helpers ===
-  const $ = (sel, root=document) => root.querySelector(sel);
-  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+  const $ = (s, r=document)=>r.querySelector(s);
+  const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
 
-  // Build badges (Überblick) from cfg.overview if present
-  const plan = document.getElementById("plan");
-  const badges = plan ? $("ul.badges", plan) : null;
-  if (badges && cfg.overview){
-    const ov = cfg.overview;
-    badges.innerHTML = [
-      `<li><span>Start</span><strong>${ov.start||""}</strong></li>`,
-      `<li><span>Distanz</span><strong>${ov.distanz||""}</strong></li>`,
-      `<li><span>Höhenmeter</span><strong>${ov.hm||""}</strong></li>`,
-      ov.strategie ? `<li><span>Strategie</span><strong>${ov.strategie}</strong></li>` : "",
-      ov.pacing ? `<li><span>Pacing</span><strong>${ov.pacing}</strong></li>` : "",
-      ov.hydration ? `<li><span>Hydration</span><strong>${ov.hydration}</strong></li>` : ""
-    ].filter(Boolean).join("");
+  if(cfg.site){
+    if(cfg.site.keynote){ const kn=$(".keynote"); if(kn) kn.innerHTML=`<em>${cfg.site.keynote}</em>`; }
+    if(Array.isArray(cfg.site.keychips)){ const kc=$("#kernaussagen"); if(kc){ kc.innerHTML = cfg.site.keychips.map(ch=>`<span class="chip">${ch.label}: &nbsp;<strong>${ch.value}</strong></span>`).join(""); } }
+    if(cfg.site.team && cfg.site.team.shout){ const p=Array.from(document.querySelectorAll("p")).find(x=>x.textContent.includes("Rückenwind")); if(p){ const n=cfg.site.team.names||"🚴 Robbie & Kike 🚴"; p.innerHTML=`${cfg.site.team.shout}<br><strong>${n}</strong>`; } }
+    if(cfg.site.contact && cfg.site.contact.email){ const fm=$("#abschluss .footer-minor div"); if(fm){ fm.innerHTML=`Fragen, Daten oder GPX? → <a href="mailto:${cfg.site.contact.email}">${cfg.site.contact.email}</a>`; } }
+    if(cfg.site.basajaun && cfg.site.basajaun.meta){ const span=$("#basajaun-prev .mini-card span"); if(span) span.textContent = cfg.site.basajaun.meta; }
   }
 
-  // Update lists in the Details-Blöcke
-  if (plan && cfg.sections){
-    const pacingUl = $$("details.ab")[0]?.querySelector("ul.list");
-    const sleepUl  = $$("details.ab")[2]?.querySelector("ul.list"); // third details is "Schlaf & Ernährung"
-    if (pacingUl && Array.isArray(cfg.sections.pacing)){
-      pacingUl.innerHTML = cfg.sections.pacing.map(t => `<li>${t}</li>`).join("");
-    }
-    if (sleepUl && Array.isArray(cfg.sections.sleep)){
-      sleepUl.innerHTML = cfg.sections.sleep.map(t => `<li>${t}</li>`).join("");
-    }
-  }
-
-  // Setup media grid in the "Setup (Bike & Ausrüstung)" details block
-  if (plan && Array.isArray(cfg.setupMedia) && cfg.setupMedia.length){
-    const detailsList = $$(".ab", plan);
-    const setupDetails = detailsList[1]; // second details is "Setup (Bike & Ausrüstung)"
-    if (setupDetails){
-      let grid = setupDetails.querySelector(".setup-media");
-      if(!grid){
-        grid = document.createElement("div");
-        grid.className = "setup-media";
-        setupDetails.appendChild(grid);
+  const plan = $("#plan");
+  if(plan && cfg.plan){
+    if(cfg.plan.overview){ const bd=$("ul.badges", plan); if(bd){ const ov=cfg.plan.overview, m=(l,v)=>v?`<li><span>${l}</span><strong>${v}</strong></li>`:""; bd.innerHTML=[m("Start",ov.start),m("Distanz",ov.distanz),m("Höhenmeter",ov.hm),m("Strategie",ov.strategie),m("Pacing",ov.pacing),m("Hydration",ov.hydration)].filter(Boolean).join(""); } }
+    const details = $$(".ab", plan);
+    if(details[0] && Array.isArray(cfg.plan.pacing_terrain)){ const ul=$("ul.list", details[0]); if(ul) ul.innerHTML = cfg.plan.pacing_terrain.map(t=>`<li>${t}</li>`).join(""); }
+    if(details[1] && cfg.plan.setup){
+      const cards = $$(".card", details[1]);
+      if(cards[0]){ const p=cards[0].querySelector("p"); if(p) p.textContent = cfg.plan.setup.bike_meta||""; const ul=cards[0].querySelector("ul.list"); if(ul) ul.innerHTML=(cfg.plan.setup.bike_points||[]).map(i=>`<li>${i}</li>`).join(""); }
+      if(cards[1]){ const ul=cards[1].querySelector("ul.list"); if(ul) ul.innerHTML=(cfg.plan.setup.hydration_points||[]).map(i=>`<li>${i}</li>`).join(""); }
+      if(cards[2]){ const ul=cards[2].querySelector("ul.list"); if(ul) ul.innerHTML=(cfg.plan.setup.nav_points||[]).map(i=>`<li>${i}</li>`).join(""); }
+      if(Array.isArray(cfg.plan.setup.media) && cfg.plan.setup.media.length){
+        let grid = details[1].querySelector(".setup-media"); if(!grid){ grid=document.createElement("div"); grid.className="setup-media"; details[1].appendChild(grid); }
+        const startIndex = document.querySelectorAll(".lightbox").length + 20000;
+        cfg.plan.setup.media.forEach((m,idx)=>{
+          const fig=document.createElement("figure"); const aid=`simg${startIndex+idx}`;
+          const a=document.createElement("a"); a.href="#"; const img=new Image(); img.loading="lazy"; img.decoding="async"; img.src=m.src; img.alt=m.alt||""; a.appendChild(img); fig.appendChild(a);
+          if(m.caption){ const cap=document.createElement("figcaption"); cap.textContent=m.caption; fig.appendChild(cap); }
+          const lb=document.createElement("div"); lb.className="lightbox"; lb.id=aid;
+          lb.innerHTML=`<a href="#" class="lightbox-close">&times;</a><img src="${(m.src||'').replace(/&/g,'&amp;')}" alt="${(m.alt||'').replace(/"/g,'&quot;')}">`;
+          document.body.appendChild(lb);
+          a.addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="flex"; document.body.style.overflow="hidden"; });
+          lb.addEventListener("click",(ev)=>{ if(ev.target===lb){ lb.style.display="none"; document.body.style.overflow=""; } });
+          lb.querySelector(".lightbox-close").addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="none"; document.body.style.overflow=""; });
+          fig.appendChild(a); grid.appendChild(fig);
+        });
       }
-      const startIndex = document.querySelectorAll(".lightbox").length + 10000;
-      cfg.setupMedia.forEach((m, idx) => {
-        const fig = document.createElement("figure");
-        const aid = `simg${startIndex + idx}`;
-        const a = document.createElement("a");
-        a.href = `#${aid}`;
-        const img = new Image();
-        img.loading = "lazy"; img.decoding = "async";
-        img.src = m.src; img.alt = m.alt || "";
-        a.appendChild(img);
-        fig.appendChild(a);
-        if (m.caption){
-          const cap = document.createElement("figcaption");
-          cap.textContent = m.caption;
-          fig.appendChild(cap);
-        }
-        grid.appendChild(fig);
-
-        // Lightbox für Setup-Bilder
-        const lb = document.createElement("div");
-        lb.className = "lightbox";
-        lb.id = aid;
-        lb.innerHTML = `<a href="#" class="lightbox-close">&times;</a>
-                        <img src="${(m.src||'').replace(/&/g,'&amp;')}" alt="${(m.alt||'').replace(/"/g,'&quot;')}">`;
-        document.body.appendChild(lb);
-      });
     }
+    if(details[2] && Array.isArray(cfg.plan.sleep_nutrition)){ const ul=$("ul.list", details[2]); if(ul) ul.innerHTML = cfg.plan.sleep_nutrition.map(t=>`<li>${t}</li>`).join(""); }
+  }
+
+  const fazit=document.querySelector("#abschluss");
+  if(fazit && cfg.fazit){
+    if(cfg.fazit.overview){ const bd=fazit.querySelector("ul.badges"), ov=cfg.fazit.overview, m=(l,v)=>`<li><span>${l}</span><strong>${v||"—"}</strong></li>`; if(bd) bd.innerHTML=[m("Distanz",ov.distanz),m("Höhenmeter",ov.hm),m("Bewegungszeit",ov.bewegungszeit),m("Pausenzeit",ov.pausenzeit),m("Ø-Leistung",ov.o_leistung),m("Kalorienverbrauch",ov.kcal),m("Fett verbrannt",ov.fett)].join(""); }
+    if(Array.isArray(cfg.fazit.lessons)){ const ul=fazit.querySelector("details.ab:nth-of-type(1) ul.list"); if(ul) ul.innerHTML = cfg.fazit.lessons.map(t=>`<li>${t}</li>`).join(""); }
+    if(Array.isArray(cfg.fazit.setup_cards)){ const grid=fazit.querySelector("details.ab:nth-of-type(2) .grid"); if(grid) grid.innerHTML = cfg.fazit.setup_cards.map(c=>`<div class="card" role="listitem"><strong>${c.title||"Setup"}</strong><ul class="list">${(c.items||[]).map(i=>`<li>${i}</li>`).join("")}</ul></div>`).join(""); }
+    if(Array.isArray(cfg.fazit.nutrition)){ const ul=fazit.querySelector("details.ab:nth-of-type(3) ul.list"); if(ul) ul.innerHTML = cfg.fazit.nutrition.map(t=>`<li>${t}</li>`).join(""); }
   }
 })();
 </script>
