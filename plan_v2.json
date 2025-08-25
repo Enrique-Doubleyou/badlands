@@ -5,7 +5,7 @@
       { "label": "Distanz", "value": "820 km" },
       { "label": "Höhenmeter", "value": "16.000 m" },
       { "label": "Untergrund", "value": "Sand · Schotter · Pistas" },
-      { "label": "Temperatur", "value": "heiß · trocken · windanfällig" },
+      { "label": "Temperatur", "value": "heiß (>35°) · trocken · windanfällig" },
       { "label": "Nachschub", "value": "selten / unassisted · kaum Wasser" }
     ],
     "team": {
@@ -22,7 +22,7 @@
       "hm": "16.000 m",
       "strategie": "kein Schlafen, nur Powernaps",
       "pacing": "60/35/30/20 km/h Caps",
-      "hydration": "Abschnitte 2,2 – 4,2 l"
+      "hydration": "2,2–4,2 l je nach Abschnitt"
     },
     "pacing_terrain": [
       "Downhills strikt: Asphalt ≤ 50–60; Gravel ≤ 35; Dirt ≤ 30; Sand ≤ 20 km/h.",
@@ -30,7 +30,7 @@
       "Wind: exponierte Ebenen früh/abends fahren; Küstenbrise einplanen."
     ],
     "setup": {
-      "bike_meta": "Canyon Inflite CF SLX · Campagnolo Levante DB · Tufo Thundero · Tannus Inserts",
+      "bike_meta": "Canyon Inflite CF SLX · Campagnolo Levante DB · Tufo Thundero · Tannus Inserts · 1-12 (36-10/44) ",
       "bike_points": [
         "Zielgewicht (ohne Wasser): ≤ 13 kg",
         "Reifen: Tufo Thundero 40 mm (h) - 48 mm (v)"
@@ -41,7 +41,7 @@
       ],
       "nav_points": [
         "Headunit: Garmin Edge 1040",
-        "Backup: Powerbank + Handy in Top Tube"
+        "Licht: ZNex OM3 + Powerbank (20k) + Handy in Top Tube"
       ],
       "media": [
         { "src": "setup1.jpg", "alt": "Basajaun 18kg Setup", "caption": "Basajaun 18kg Setup" },
