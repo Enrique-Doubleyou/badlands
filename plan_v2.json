@@ -22,7 +22,7 @@
       "hm": "16.000 m",
       "strategie": "kein Schlafen, nur Powernaps",
       "pacing": "60/35/30/20 km/h Caps",
-      "hydration": "Abschnitte 2–4,2 l"
+      "hydration": "Abschnitte 2,2 – 4,2 l"
     },
     "pacing_terrain": [
       "Downhills strikt: Asphalt ≤ 50–60; Gravel ≤ 35; Dirt ≤ 30; Sand ≤ 20 km/h.",
@@ -30,10 +30,10 @@
       "Wind: exponierte Ebenen früh/abends fahren; Küstenbrise einplanen."
     ],
     "setup": {
-      "bike_meta": "Canyon Inflite CF SLX · Z45i21SL · Tufo Thundero · Tannus",
+      "bike_meta": "Canyon Inflite CF SLX · Campagnolo Levante DB · Tufo Thundero · Tannus Inserts",
       "bike_points": [
         "Zielgewicht (ohne Wasser): ≤ 13 kg",
-        "Reifen: Tufo Thundero 40–48 mm"
+        "Reifen: Tufo Thundero 40 mm (h) - 48 mm (v)"
       ],
       "hydration_points": [
         "Flaschen: 0,62 l + 0,62 l",
@@ -44,8 +44,8 @@
         "Backup: Powerbank + Handy in Top Tube"
       ],
       "media": [
-        { "src": "setup1.jpg", "alt": "Bike-Pack Setup links", "caption": "Bike-Pack · links" },
-        { "src": "setup2.jpg", "alt": "Bike-Pack Setup rechts", "caption": "Bike-Pack · rechts" }
+        { "src": "setup1.jpg", "alt": "Basajaun 18kg Setup", "caption": "Basajaun 18kg Setup" },
+        { "src": "setup2.jpg", "alt": "Badlands 13kg Setup", "caption": "Badlands 13kg Setup" }
       ]
     },
     "sleep_nutrition": [
