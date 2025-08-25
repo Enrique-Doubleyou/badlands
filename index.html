@@ -357,7 +357,7 @@ h2{ text-align:center; }
 <meta name="twitter:image" content="banner_badlands.jpg">
 </head>
 <body>
-<div id=\"top\" aria-hidden=\"true\"></div>
+<div id="top" aria-hidden="true"></div>
 <div class="fab-stack" id="fab-stack">
   <a class="fab-pill" href="#galerie" aria-label="Zur Galerie springen">↘ <span>Galerie</span></a>
   <a class="fab-pill" href="#plan" aria-label="Zum Strategie-Teil">↙ <span>Strategie</span></a>
@@ -511,7 +511,7 @@ h2{ text-align:center; }
 <script>
   // === Badlands Live-Galerie (Direct-Mode via Google Drive + Apps Script JSON Feed) ===
   // Konfiguration
-  const FEED_URL = new URLSearchParams(location.search).get("feed") || "YOUR_APPS_SCRIPT_WEBAPP_URL"; // z.B. https://script.google.com/macros/s/.../exec
+  const FEED_URL = new URLSearchParams(location.search).get("feed") || "https://script.google.com/macros/s/AKfycbwyetJ-yt_MGJuUthlgD1f_V-i8hdU2mJNG9YlP2cyejZjfpK-R_KLP-jZXszBHvL-V/exec"; // z.B. https://script.google.com/macros/s/.../exec
   const FIRST_LIMIT = 48;
   const feedGrid = document.getElementById("bildergalerie");
   const noteNoImages = document.getElementById("noImages");
