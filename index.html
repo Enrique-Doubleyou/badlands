@@ -341,6 +341,13 @@ h2{ text-align:center; }
   body{ background:linear-gradient(180deg, var(--sand) 0%, var(--dune) 60%, #141a1f 100%); }
 }
 
+
+/* Setup-Medien (konfigurierbar) */
+.setup-media{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:.6rem}
+.setup-media figure{margin:0}
+.setup-media img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.setup-media figcaption{font-size:.8rem;color:var(--muted-global);text-align:center;margin-top:.3rem}
+
 </style>
 <meta name="description" content="&quot;Die wilde Wüste Andalusiens: Wadis, Salzebenen, steinige Pistas – Wasser & Hitze als limitierende Faktoren. Durch Gorafe & Tabernas, entlang der Küste von Cabo de Gata und hinauf in die Sierra Nevada Richtung Pico Veleta (3.396 m). Start und Ziel in Granada: Wüste, Wind, Hitze – Wasser- und Zeitmanagement werden entscheiden.&quot;">
 
@@ -599,5 +606,123 @@ const feedGrid = document.getElementById("bildergalerie");
   setInterval(hourly, 60*60*1000); // stündlich
   document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) hourly(); });
 </script>
+
+<script id="plan-config" type="application/json">
+{
+  "overview": {
+    "start": "31.08.2025 · 08:00",
+    "distanz": "821 km",
+    "hm": "16.000 m",
+    "strategie": "3 Tage, kein Schlafen, nur Powernaps",
+    "pacing": "60/35/30/20 km/h Caps",
+    "hydration": "Abschnitte 2–4,5 l"
+  },
+  "sections": {
+    "pacing": [
+      "Downhills strikt: Asphalt ≤ 50–60; Gravel ≤ 35; Dirt ≤ 30; Sand ≤ 20 km/h.",
+      "Hitze-Management: Tempo bei >35 °C und in Wadis senken; Schatten/Siesta-Option.",
+      "Wind: exponierte Ebenen früh/abends fahren; Küstenbrise einplanen."
+    ],
+    "sleep": [
+      "Strategie: 3 Tage durchfahren, nur Powernaps (20–25 min alle 4–5 h); kein Schlafen im Bett.",
+      "Realfood unterwegs + Gels/Riegel/Elektrolyte; Kältemanagement für Getränke.",
+      "Wasserstrategie pro Abschnitt vorab markieren (Tanke, Supermarkt, Brunnen)."
+    ]
+  },
+  "setupMedia": [
+    {
+      "src": "setup1.jpg",
+      "alt": "Bike-Pack Setup links",
+      "caption": "Bike-Pack · links"
+    },
+    {
+      "src": "setup2.jpg",
+      "alt": "Bike-Pack Setup rechts",
+      "caption": "Bike-Pack · rechts"
+    }
+  ]
+}
+</script>
+
+<script>
+(function(){
+  const cfgEl = document.getElementById("plan-config");
+  if(!cfgEl) return;
+  let cfg = {};
+  try{ cfg = JSON.parse(cfgEl.textContent || "{}"); }catch(e){ console.warn("Plan config JSON parse error", e); return; }
+
+  // === Helpers ===
+  const $ = (sel, root=document) => root.querySelector(sel);
+  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+  // Build badges (Überblick) from cfg.overview if present
+  const plan = document.getElementById("plan");
+  const badges = plan ? $("ul.badges", plan) : null;
+  if (badges && cfg.overview){
+    const ov = cfg.overview;
+    badges.innerHTML = [
+      `<li><span>Start</span><strong>${ov.start||""}</strong></li>`,
+      `<li><span>Distanz</span><strong>${ov.distanz||""}</strong></li>`,
+      `<li><span>Höhenmeter</span><strong>${ov.hm||""}</strong></li>`,
+      ov.strategie ? `<li><span>Strategie</span><strong>${ov.strategie}</strong></li>` : "",
+      ov.pacing ? `<li><span>Pacing</span><strong>${ov.pacing}</strong></li>` : "",
+      ov.hydration ? `<li><span>Hydration</span><strong>${ov.hydration}</strong></li>` : ""
+    ].filter(Boolean).join("");
+  }
+
+  // Update lists in the Details-Blöcke
+  if (plan && cfg.sections){
+    const pacingUl = $$("details.ab")[0]?.querySelector("ul.list");
+    const sleepUl  = $$("details.ab")[2]?.querySelector("ul.list"); // third details is "Schlaf & Ernährung"
+    if (pacingUl && Array.isArray(cfg.sections.pacing)){
+      pacingUl.innerHTML = cfg.sections.pacing.map(t => `<li>${t}</li>`).join("");
+    }
+    if (sleepUl && Array.isArray(cfg.sections.sleep)){
+      sleepUl.innerHTML = cfg.sections.sleep.map(t => `<li>${t}</li>`).join("");
+    }
+  }
+
+  // Setup media grid in the "Setup (Bike & Ausrüstung)" details block
+  if (plan && Array.isArray(cfg.setupMedia) && cfg.setupMedia.length){
+    const detailsList = $$(".ab", plan);
+    const setupDetails = detailsList[1]; // second details is "Setup (Bike & Ausrüstung)"
+    if (setupDetails){
+      let grid = setupDetails.querySelector(".setup-media");
+      if(!grid){
+        grid = document.createElement("div");
+        grid.className = "setup-media";
+        setupDetails.appendChild(grid);
+      }
+      const startIndex = document.querySelectorAll(".lightbox").length + 10000;
+      cfg.setupMedia.forEach((m, idx) => {
+        const fig = document.createElement("figure");
+        const aid = `simg${startIndex + idx}`;
+        const a = document.createElement("a");
+        a.href = `#${aid}`;
+        const img = new Image();
+        img.loading = "lazy"; img.decoding = "async";
+        img.src = m.src; img.alt = m.alt || "";
+        a.appendChild(img);
+        fig.appendChild(a);
+        if (m.caption){
+          const cap = document.createElement("figcaption");
+          cap.textContent = m.caption;
+          fig.appendChild(cap);
+        }
+        grid.appendChild(fig);
+
+        // Lightbox für Setup-Bilder
+        const lb = document.createElement("div");
+        lb.className = "lightbox";
+        lb.id = aid;
+        lb.innerHTML = `<a href="#" class="lightbox-close">&times;</a>
+                        <img src="${(m.src||'').replace(/&/g,'&amp;')}" alt="${(m.alt||'').replace(/"/g,'&quot;')}">`;
+        document.body.appendChild(lb);
+      });
+    }
+  }
+})();
+</script>
+
 </body>
 </html>
