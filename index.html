@@ -348,6 +348,14 @@ h2{ text-align:center; }
 .setup-media img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
 .setup-media figcaption{font-size:.8rem;color:var(--muted-global);text-align:center;margin-top:.3rem}
 
+
+/* Setup-Medien */
+.setup-media{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:.6rem}
+.setup-media figure{margin:0}
+.setup-media img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.setup-media figcaption{font-size:.8rem;color:var(--muted-global);text-align:center;margin-top:.3rem}
+.setup-placeholder{padding:.6rem;border:1px dashed var(--bd, #e9ecef);border-radius:8px;color:var(--muted-global);text-align:center}
+
 </style>
 <meta name="description" content="&quot;Die wilde Wüste Andalusiens: Wadis, Salzebenen, steinige Pistas – Wasser & Hitze als limitierende Faktoren. Durch Gorafe & Tabernas, entlang der Küste von Cabo de Gata und hinauf in die Sierra Nevada Richtung Pico Veleta (3.396 m). Start und Ziel in Granada: Wüste, Wind, Hitze – Wasser- und Zeitmanagement werden entscheiden.&quot;">
 
@@ -462,6 +470,7 @@ h2{ text-align:center; }
 
 <section class="abschluss" id="abschluss" style="display:none">
   <h2>Badlands Fazit</h2>
+  <div id="fazit-hint" style="display:none;margin:-.2rem 0 .6rem;font-size:.85rem;color:var(--muted-global)">Hinweis: „Badlands Fazit“ ist per <code>?fazit=1</code> sichtbar. Zum Ausblenden den Parameter entfernen.</div>
   <div>
     <h3>Überblick</h3>
     <ul class="badges">
@@ -616,21 +625,32 @@ document.addEventListener("keydown",(ev)=>{ if(ev.key==="Escape" && lb.style.dis
 
 
 
+
 <script>
 (async function loadPlan(){
-  let cfg=null; let lastErr=null;
-  const planParam = new URLSearchParams(location.search).get('plan');
-  const candidates = planParam ? [planParam] : ['plan_v2.json','plan.json'];
+  let cfg=null; let lastErr=null; let usedUrl=null;
+  const usp = new URLSearchParams(location.search);
+  const planParam = usp.get('plan');
+  const debugOn = usp.get('debug') === '1';
+  const candidates = planParam ? [planParam] : ['./plan_v2.json','./plan.json','plan_v2.json','plan.json'];
   for(const url of candidates){
     try{
       const res = await fetch(url, {cache:'no-store'});
-      if(!res.ok) { lastErr = new Error('HTTP '+res.status+' @ '+url); continue; }
-      cfg = await res.json();
-      console.log('Loaded plan config from', url);
-      break;
+      if(!res.ok){ lastErr = new Error('HTTP '+res.status+' @ '+url); continue; }
+      cfg = await res.json(); usedUrl = url; break;
     }catch(e){ lastErr = e; }
   }
-  if(!cfg){ console.warn('plan.json not loaded:', lastErr); return; }
+  // Minimal debug panel
+  const dbg = document.createElement('div');
+  dbg.style.cssText = "position:fixed;left:8px;bottom:8px;background:#0008;color:#fff;padding:6px 8px;border-radius:8px;font:12px/1.2 system-ui;z-index:99999;display:none";
+  dbg.id = "plan-debug";
+  dbg.textContent = usedUrl ? ("plan loaded: "+usedUrl) : ("plan load FAILED: "+(lastErr && (lastErr.message||lastErr)) );
+  document.body.appendChild(dbg);
+  if(debugOn || !cfg){ dbg.style.display='block'; }
+
+  if(!cfg){ console.warn('plan not loaded:', lastErr); return; }
+  console.log('Loaded plan config from', usedUrl);
+  if(debugOn){ alert('plan geladen aus: '+usedUrl); }
 
   const $ = (s, r=document)=>r.querySelector(s);
   const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
@@ -641,61 +661,82 @@ document.addEventListener("keydown",(ev)=>{ if(ev.key==="Escape" && lb.style.dis
     if(Array.isArray(cfg.site.keychips)){ const kc=$("#kernaussagen"); if(kc){ kc.innerHTML = cfg.site.keychips.map(ch=>`<span class="chip">${ch.label}: &nbsp;<strong>${ch.value}</strong></span>`).join(""); } }
     if(cfg.site.team && cfg.site.team.shout){ const p=Array.from(document.querySelectorAll("p")).find(x=>x.textContent.includes("Rückenwind")); if(p){ const n=cfg.site.team.names||"🚴 Robbie & Kike 🚴"; p.innerHTML=`${cfg.site.team.shout}<br><strong>${n}</strong>`; } }
     if(cfg.site.contact && cfg.site.contact.email){
-  const fm = document.querySelector("#abschluss .footer-minor div");
-  if(fm){ fm.innerHTML = `Fragen, Daten oder GPX? → <a href="mailto:${cfg.site.contact.email}">${cfg.site.contact.email}</a>`; }
-  const fc = document.getElementById("footer-contact");
-  if(fc){ fc.innerHTML = `Fragen, Daten oder GPX? → <a href="mailto:${cfg.site.contact.email}">${cfg.site.contact.email}</a>`; }
-}">${cfg.site.contact.email}</a>`; } }
+      const fm = document.querySelector("#abschluss .footer-minor div");
+      if(fm){ fm.innerHTML = `Fragen, Daten oder GPX? → <a href="mailto:${cfg.site.contact.email}">${cfg.site.contact.email}</a>`; }
+      const fc = document.getElementById("footer-contact");
+      if(fc){ fc.innerHTML = `Fragen, Daten oder GPX? → <a href="mailto:${cfg.site.contact.email}">${cfg.site.contact.email}</a>`; }
+    }
     if(cfg.site.basajaun && cfg.site.basajaun.meta){ const span=$("#basajaun-prev .mini-card span"); if(span) span.textContent = cfg.site.basajaun.meta; }
   }
 
   // === Planung & Strategie ===
   const plan = $("#plan");
   if(plan && cfg.plan){
-    if(cfg.plan.overview){ const bd=$("ul.badges", plan); if(bd){ const ov=cfg.plan.overview, m=(l,v)=>v?`<li><span>${l}</span><strong>${v}</strong></li>`:""; bd.innerHTML=[m("Start",ov.start),m("Distanz",ov.distanz),m("Höhenmeter",ov.hm),m("Strategie",ov.strategie),m("Pacing",ov.pacing),m("Hydration",ov.hydration)].filter(Boolean).join(""); } }
+    if(cfg.plan.overview){
+      const bd=$("ul.badges", plan);
+      if(bd){
+        const ov=cfg.plan.overview, m=(l,v)=>v?`<li><span>${l}</span><strong>${v}</strong></li>`:"";
+        bd.innerHTML=[m("Start",ov.start),m("Distanz",ov.distanz),m("Höhenmeter",ov.hm),m("Strategie",ov.strategie),m("Pacing",ov.pacing),m("Hydration",ov.hydration)].filter(Boolean).join("");
+      }
+    }
     const details = $$(".ab", plan);
-    if(details[0] && Array.isArray(cfg.plan.pacing_terrain)){ const ul=$("ul.list", details[0]); if(ul) ul.innerHTML = cfg.plan.pacing_terrain.map(t=>`<li>${t}</li>`).join(""); }
+    if(details[0] && Array.isArray(cfg.plan.pacing_terrain)){
+      const ul=$("ul.list", details[0]); if(ul) ul.innerHTML = cfg.plan.pacing_terrain.map(t=>`<li>${t}</li>`).join("");
+    }
     if(details[1] && cfg.plan.setup){
       const cards = $$(".card", details[1]);
       if(cards[0]){ const p=cards[0].querySelector("p"); if(p) p.textContent = cfg.plan.setup.bike_meta||""; const ul=cards[0].querySelector("ul.list"); if(ul) ul.innerHTML=(cfg.plan.setup.bike_points||[]).map(i=>`<li>${i}</li>`).join(""); }
       if(cards[1]){ const ul=cards[1].querySelector("ul.list"); if(ul) ul.innerHTML=(cfg.plan.setup.hydration_points||[]).map(i=>`<li>${i}</li>`).join(""); }
       if(cards[2]){ const ul=cards[2].querySelector("ul.list"); if(ul) ul.innerHTML=(cfg.plan.setup.nav_points||[]).map(i=>`<li>${i}</li>`).join(""); }
+      // Setup media only if provided (no placeholder)
       if(Array.isArray(cfg.plan.setup.media) && cfg.plan.setup.media.length){
-        let grid = details[1].querySelector(".setup-media"); if(!grid){ grid=document.createElement("div"); grid.className="setup-media"; details[1].appendChild(grid); }
-        const startIndex = document.querySelectorAll(".lightbox").length + 20000;
+        let grid = details[1].querySelector(".setup-media");
+        if(!grid){
+          const h=document.createElement("h3"); h.textContent="Setup-Fotos"; details[1].appendChild(h);
+          grid=document.createElement("div"); grid.className="setup-media"; details[1].appendChild(grid);
+        }
+        const startIndex = document.querySelectorAll(".lightbox").length + 40000;
         cfg.plan.setup.media.forEach((m,idx)=>{
           const fig=document.createElement("figure"); const aid=`simg${startIndex+idx}`;
-          const a=document.createElement("a"); a.href="#"; const img=new Image(); img.loading="lazy"; img.decoding="async"; img.src=m.src; img.alt=m.alt||""; a.appendChild(img); fig.appendChild(a);
+          const a=document.createElement("a"); a.href="#"; const img=new Image(); img.loading="lazy"; img.decoding="async"; img.src=m.src; img.alt=m.alt||"";
+          img.addEventListener("error", ()=>{ img.style.opacity=.6; img.title = "Bild nicht gefunden: "+(m.src||""); });
+          a.appendChild(img); fig.appendChild(a);
           if(m.caption){ const cap=document.createElement("figcaption"); cap.textContent=m.caption; fig.appendChild(cap); }
           const lb=document.createElement("div"); lb.className="lightbox"; lb.id=aid;
           lb.innerHTML=`<a href="#" class="lightbox-close">&times;</a><img src="${(m.src||'').replace(/&/g,'&amp;')}" alt="${(m.alt||'').replace(/"/g,'&quot;')}">`;
           document.body.appendChild(lb);
-// No-hash open/close to avoid scroll jump
-link.addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="flex"; document.body.style.overflow="hidden"; });
-const closeEl = lb.querySelector(".lightbox-close");
-if(closeEl){ closeEl.addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="none"; document.body.style.overflow=""; }); }
-lb.addEventListener("click",(ev)=>{ if(ev.target===lb){ lb.style.display="none"; document.body.style.overflow=""; } });
-document.addEventListener("keydown",(ev)=>{ if(ev.key==="Escape" && lb.style.display==="flex"){ lb.style.display="none"; document.body.style.overflow=""; } });
-a.addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="flex"; document.body.style.overflow="hidden"; });
+          a.addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="flex"; document.body.style.overflow="hidden"; });
           lb.addEventListener("click",(ev)=>{ if(ev.target===lb){ lb.style.display="none"; document.body.style.overflow=""; } });
-          lb.querySelector(".lightbox-close").addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="none"; document.body.style.overflow=""; });
-          fig.appendChild(a); grid.appendChild(fig);
+          const closeEl=lb.querySelector(".lightbox-close"); if(closeEl){ closeEl.addEventListener("click",(ev)=>{ ev.preventDefault(); lb.style.display="none"; document.body.style.overflow=""; }); }
+          grid.appendChild(fig);
         });
       }
     }
-    if(details[2] && Array.isArray(cfg.plan.sleep_nutrition)){ const ul=$("ul.list", details[2]); if(ul) ul.innerHTML = cfg.plan.sleep_nutrition.map(t=>`<li>${t}</li>`).join(""); }
+    if(details[2] && Array.isArray(cfg.plan.sleep_nutrition)){
+      const ul=$("ul.list", details[2]); if(ul) ul.innerHTML = cfg.plan.sleep_nutrition.map(t=>`<li>${t}</li>`).join("");
+    }
   }
 
   // === Badlands Fazit ===
   const fazit=$("#abschluss");
   if(fazit && cfg.fazit){
-    if(cfg.fazit.overview){ const bd=fazit.querySelector("ul.badges"), ov=cfg.fazit.overview, m=(l,v)=>`<li><span>${l}</span><strong>${v||"—"}</strong></li>`; if(bd) bd.innerHTML=[m("Distanz",ov.distanz),m("Höhenmeter",ov.hm),m("Bewegungszeit",ov.bewegungszeit),m("Pausenzeit",ov.pausenzeit),m("Ø-Leistung",ov.o_leistung),m("Kalorienverbrauch",ov.kcal),m("Fett verbrannt",ov.fett)].join(""); }
+    const urlShow = new URLSearchParams(location.search).get("fazit") === "1";
+    const cfgShow = (cfg.fazit && cfg.fazit.visible===true);
+    fazit.style.display = (urlShow || cfgShow) ? "" : "none";
+    const hintEl = document.getElementById("fazit-hint");
+    if(hintEl){ hintEl.style.display = urlShow ? "" : "none"; }
+
+    if(cfg.fazit.overview){
+      const bd=fazit.querySelector("ul.badges"), ov=cfg.fazit.overview, m=(l,v)=>`<li><span>${l}</span><strong>${v||"—"}</strong></li>`;
+      if(bd) bd.innerHTML=[m("Distanz",ov.distanz),m("Höhenmeter",ov.hm),m("Bewegungszeit",ov.bewegungszeit),m("Pausenzeit",ov.pausenzeit),m("Ø-Leistung",ov.o_leistung),m("Kalorienverbrauch",ov.kcal),m("Fett verbrannt",ov.fett)].join("");
+    }
     if(Array.isArray(cfg.fazit.lessons)){ const ul=fazit.querySelector("details.ab:nth-of-type(1) ul.list"); if(ul) ul.innerHTML = cfg.fazit.lessons.map(t=>`<li>${t}</li>`).join(""); }
     if(Array.isArray(cfg.fazit.setup_cards)){ const grid=fazit.querySelector("details.ab:nth-of-type(2) .grid"); if(grid) grid.innerHTML = cfg.fazit.setup_cards.map(c=>`<div class="card" role="listitem"><strong>${c.title||"Setup"}</strong><ul class="list">${(c.items||[]).map(i=>`<li>${i}</li>`).join("")}</ul></div>`).join(""); }
     if(Array.isArray(cfg.fazit.nutrition)){ const ul=fazit.querySelector("details.ab:nth-of-type(3) ul.list"); if(ul) ul.innerHTML = cfg.fazit.nutrition.map(t=>`<li>${t}</li>`).join(""); }
   }
 })();
 </script>
+
 
 </body>
 </html>
