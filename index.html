@@ -356,6 +356,30 @@ h2{ text-align:center; }
 .setup-media figcaption{font-size:.8rem;color:var(--muted-global);text-align:center;margin-top:.3rem}
 .setup-placeholder{padding:.6rem;border:1px dashed var(--bd, #e9ecef);border-radius:8px;color:var(--muted-global);text-align:center}
 
+
+/* ECHO: Fazit Bubble */
+.fazit-bubble {
+  position: fixed; right: 16px; bottom: 16px; z-index: 1000;
+  max-width: 280px; padding: 12px 14px; border-radius: 12px;
+  backdrop-filter: blur(6px);
+  background: #fffffff0; border: 1px solid var(--bd-desert, #e9ecef);
+  box-shadow: 0 8px 28px rgba(0,0,0,.14);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-size: 14px; line-height: 1.35;
+}
+.fazit-bubble h4 { margin: 0 0 6px 0; font-size: 15px; }
+.fazit-bubble .muted { color: #666; font-size: 12px; }
+.fazit-bubble .kpi { display: grid; grid-template-columns: auto auto;
+  gap: 6px 10px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.fazit-bubble .kpi b { justify-self: end; }
+.fazit-bubble .close { position:absolute; top:6px; right:8px; cursor:pointer;
+  border:none; background:transparent; font-size:16px; }
+@media (prefers-color-scheme:dark){
+  .fazit-bubble{ background:#11161be6; border-color:#2a2e33; color:#e8ecef;
+    box-shadow: 0 10px 28px rgba(0,0,0,.5); }
+  .fazit-bubble .muted{ color:#9aa4ad; }
+}
+
 </style>
 <meta name="description" content="&quot;Die wilde Wüste Andalusiens: Wadis, Salzebenen, steinige Pistas – Wasser & Hitze als limitierende Faktoren. Durch Gorafe & Tabernas, entlang der Küste von Cabo de Gata und hinauf in die Sierra Nevada Richtung Pico Veleta (3.396 m). Start und Ziel in Granada: Wüste, Wind, Hitze – Wasser- und Zeitmanagement werden entscheiden.&quot;">
 
@@ -435,7 +459,7 @@ h2{ text-align:center; }
     <div class="grid" role="list">
       <div class="card" role="listitem">
         <strong>Bike</strong>
-        <p style="margin:.2rem 0;color:var(--muted-global)">Canyon Inflite CF SLX · Z45i21SL · Tufo Thundero · Tannus</p>
+        <p style="margin:.2rem 0;color:var(--muted-global)">Canyon Inflite CF SLX · Campagnolo Levante DB · Tufo Thundero · Tannus</p>
         <ul class="list">
           <li>Zielgewicht (ohne Wasser): ≤ 13&nbsp;kg</li>
           <li>Reifen: Tufo Thundero 40–45&nbsp;mm</li>
@@ -467,6 +491,107 @@ h2{ text-align:center; }
     </ul>
   </details>
 </section>
+
+<section class="abschluss" id="fazit">
+  <h2>Fazit</h2>
+  <div>
+    <h3>Überblick</h3>
+    <ul class="badges">
+      <li><span>Distanz</span><strong>823&nbsp;km</strong></li>
+      <li><span>Höhenmeter</span><strong>15.533&nbsp;m</strong></li>
+      <li><span>Bewegungszeit</span><strong>54:04:51</strong></li>
+      <li><span>Pausenzeit</span><strong>39:36:08</strong></li>
+      <li><span>Ø‑Leistung</span><strong>130&nbsp;W</strong></li>
+      <li><span>Gesamtarbeit</span><strong>18.907&nbsp;kJ</strong></li>
+      <li><span>Kalorien</span><strong>24.459&nbsp;kcal</strong></li>
+      <li><span>Ø‑Speed</span><strong>15,2&nbsp;km/h</strong></li>
+    </ul>
+  </div>
+  <details class="ab" open>
+    <summary>Setup (Bike &amp; Ausrüstung)</summary>
+    <div class="grid" role="list">
+      <div class="card" role="listitem">
+        <strong>Bike</strong>
+        <p style="margin:.2rem 0;color:var(--muted-global)">Canyon Inflite CF SLX · Campagnolo Levante DB · Tufo Thundero · Tannus</p>
+        <ul class="list">
+          <li>Bewährt: robust, schnell, keine Defekte</li>
+          <li>Only-Tool: Luftpumpe im Einsatz</li>
+        </ul>
+      </div>
+      <div class="card" role="listitem">
+        <strong>Hydration</strong>
+        <ul class="list">
+          <li>Flaschen: 0,75&nbsp;l + 0,62&nbsp;l</li>
+          <li>Trinkblase: 3&nbsp;l (Cyclite Rucksack)</li>
+          <li>Startfüllung: ~2,9&nbsp;l Wasser</li>
+        </ul>
+      </div>
+      <div class="card" role="listitem">
+        <strong>Navigation &amp; Licht</strong>
+        <ul class="list">
+          <li>Garmin 1040</li>
+          <li>Hauptlampe OM3 (~950&nbsp;lm)</li>
+          <li>Baseus 20.000&nbsp;mAh Powerbank</li>
+        </ul>
+      </div>
+    </div>
+  </details>
+  <details class="ab">
+    <summary>Start vs. Ziel – Gewicht</summary>
+    <div class="card">
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr><th style="text-align:left">Bereich</th><th style="text-align:right">Start</th><th style="text-align:right">Ziel</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Bike (inkl. Gear, Food, 2/3 Wasser)</td><td style="text-align:right">15,5&nbsp;kg</td><td style="text-align:right">~13,1–13,3&nbsp;kg*</td></tr>
+          <tr><td>Fahrer</td><td style="text-align:right">73&nbsp;kg</td><td style="text-align:right">71&nbsp;kg</td></tr>
+          <tr><td><strong>System gesamt</strong></td><td style="text-align:right"><strong>~89&nbsp;kg</strong></td><td style="text-align:right"><strong>~84&nbsp;kg</strong></td></tr>
+        </tbody>
+      </table>
+      <p class="meta"><span class="chip">* nach Verbrauch von ~1,5&nbsp;kg Food &amp; ~2,9&nbsp;l Wasser</span></p>
+    </div>
+  </details>
+  <details class="ab">
+    <summary>Gear</summary>
+    <ul class="list">
+      <li>Apidura Racing Frame Pack 2,4&nbsp;l (145&nbsp;g) &amp; Top Tube 1&nbsp;l (105&nbsp;g)</li>
+      <li>Wolftooth B-RAD + Elite Cannibal: Werkzeugbox (Bianchi 400&nbsp;ml) unterm Unterrohr – bewährt</li>
+      <li>Cyclite Race Backpack 7&nbsp;l (311&nbsp;g)</li>
+      <li>Kleidung im Einsatz: Everve Bib, Ekoi Trikot, Siroko LS, Gore Torrent, LeCol Gilet, Buff, Cap, Handschuhe</li>
+      <li>Assos UV-Armlinge zu warm; GripGrab UV-Beinlinge ungenutzt</li>
+      <li>Schlaf/Notfall: SOL Bivvy (215&nbsp;g); Option 2026: Notfallfolie (60&nbsp;g)</li>
+    </ul>
+  </details>
+  <details class="ab">
+    <summary>Race‑Food</summary>
+    <ul class="list">
+      <li>Verbrauch: 6× Maurten 160 · 8× Maurten 100 · 4× Maurten 100 CAF</li>
+      <li>6× 226ERS HydraJelly · 10× Riegel (~30&nbsp;g) · 15/20 Iso‑Tabs</li>
+      <li>≈1,5&nbsp;kg Food genutzt (~4.300&nbsp;kcal · ~875&nbsp;g KH · ~400&nbsp;mg Koffein)</li>
+      <li>Rest am Ende: ~465&nbsp;g Food</li>
+      <li>Wasser Start: ~2,9&nbsp;l (2/3 Befüllung)</li>
+    </ul>
+  </details>
+  <details class="ab">
+    <summary>Erkenntnisse</summary>
+    <ul class="list">
+      <li>Bewusstes Socialising &amp; Foto‑Stops → kein All‑Out‑Race</li>
+      <li>Ernährung: ~50–60&nbsp;% Startnahrung genutzt, Rest lokal ergänzt</li>
+      <li>Setup funktioniert unter Hitze/Staub zuverlässig</li>
+    </ul>
+  </details>
+  <details class="ab">
+    <summary>Ausblick</summary>
+    <ul class="list">
+      <li>Fahrergewicht Ziel: 69–70&nbsp;kg</li>
+      <li>FTP 280–300&nbsp;W · VO₂max &gt; 60</li>
+      <li>Race‑Modus 2026: weniger Social‑Stops, straffere Fuel‑Taktik</li>
+    </ul>
+  </details>
+</section>
+
+
 
 <section class="abschluss" id="abschluss" style="display:none">
   <h2>Badlands Fazit</h2>
@@ -737,6 +862,25 @@ document.addEventListener("keydown",(ev)=>{ if(ev.key==="Escape" && lb.style.dis
 })();
 </script>
 
+
+
+<!-- ECHO: START BUBBLE -->
+<div class="fazit-bubble" id="fazitBubble" role="dialog" aria-label="Badlands 2025 Key Facts">
+  <button class="close" aria-label="Schließen" onclick="document.getElementById('fazitBubble').remove()">×</button>
+  <h4>Badlands 2025 – Key Facts</h4>
+  <div class="muted">Start 73 kg · Ziel 71 kg</div>
+  <div class="kpi">
+    <span>Zeit</span><b>3T 22h</b>
+    <span>Distanz</span><b>823 km</b>
+    <span>Höhenmeter</span><b>15.533 hm</b>
+    <span>Ø Speed</span><b>15,2 km/h</b>
+    <span>Ø Leistung</span><b>130 W</b>
+    <span>Kalorien</span><b>24.459 kcal</b>
+    <span>Pausenzeit</span><b>39:36:08</b>
+    <span>Food</span><b>~1,5 kg</b>
+  </div>
+</div>
+<!-- ECHO: END BUBBLE -->
 
 </body>
 </html>
