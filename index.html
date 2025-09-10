@@ -506,7 +506,7 @@ h2{ text-align:center; }
       <li><span>Gesamtarbeit</span><strong>18.907&nbsp;kJ</strong></li>
       <li><span>Kalorien</span><strong>24.459&nbsp;kcal</strong></li>
       <li><span>Ø‑Speed</span><strong>15,2&nbsp;km/h</strong></li>
-      <li class="wide"><span>Pausenstrategie</span><strong>Powernaps (Tag 1: 3×30&nbsp;min, Tag 2: 4×30–60&nbsp;min, Tag 3: 2×) · bewusst längere Stopps für Fotos, Gespräche & das Erlebnis</strong></li>
+      <li class="wide"><span>Pausenstrategie</span><strong>Powernaps (Tag 1: 3×30&nbsp;min, Tag 2: 4×30–60&nbsp;min, Tag 3: 2× -> Gesamt ca 7h) · bewusst längere Stopps für Fotos, Gespräche & das Erlebnis</strong></li>
     </ul>
   </div>
   <details class="ab" open>
@@ -526,6 +526,7 @@ h2{ text-align:center; }
           <li>Flaschen: 0,75&nbsp;l + 0,62&nbsp;l</li>
           <li>Trinkblase: 3&nbsp;l (Cyclite Rucksack)</li>
           <li>Startfüllung: ~2,9&nbsp;l Wasser</li>
+          <li>15*Iso-Tabs(1/Fl) & 4*Trinkblase befüllt(1,5-2,5l)</li>
         </ul>
       </div>
       <div class="card" role="listitem">
@@ -594,44 +595,6 @@ h2{ text-align:center; }
   </details>
 </section>
 
-
-
-<section class="abschluss" id="abschluss" style="display:none">
-  <h2>Badlands Fazit</h2>
-  <div id="fazit-hint" style="display:none;margin:-.2rem 0 .6rem;font-size:.85rem;color:var(--muted-global)">Hinweis: „Badlands Fazit“ ist per <code>?fazit=1</code> sichtbar. Zum Ausblenden den Parameter entfernen.</div>
-  <div>
-    <h3>Überblick</h3>
-    <ul class="badges">
-      <li><span>Distanz</span><strong>—</strong></li>
-      <li><span>Höhenmeter</span><strong>—</strong></li>
-      <li><span>Bewegungszeit</span><strong>—</strong></li>
-      <li><span>Pausenzeit</span><strong>—</strong></li>
-      <li><span>Ø-Leistung</span><strong>—</strong></li>
-      <li><span>Kalorienverbrauch</span><strong>—</strong></li>
-      <li><span>Fett verbrannt</span><strong>—</strong></li>
-    </ul>
-  </div>
-  <details class="ab" open>
-    <summary>Lessons Learned (kurz)</summary>
-    <ul class="list"><li>–</li></ul>
-  </details>
-  <details class="ab">
-    <summary>Setup (Bike &amp; Ausrüstung)</summary>
-    <div class="grid" role="list"><div class="card" role="listitem"><strong>–</strong><ul class="list"><li>–</li></ul></div></div>
-  </details>
-  <details class="ab">
-    <summary>Ernährung &amp; Hydration (Kurzüberblick)</summary>
-    <ul class="list"><li>–</li></ul>
-  </details>
-  <details class="ab">
-    <summary>Downloads</summary>
-    <div class="downloads">
-      <a class="btn" href="marschtabelle.pdf" download>Marschtabelle (PDF)</a>
-      <a class="btn" href="etappenplan.csv" download>Etappenplan (CSV)</a>
-    </div>
-  </details>
-  </div>
-</section>
 <div class="mini-prev" id="basajaun-prev">
   <a class="mini-card" href="https://enrique-doubleyou.github.io/basajaun/" title="Zur Basajaun-Seite">
     <img class="mini-thumb" src="https://enrique-doubleyou.github.io/basajaun/banner.jpg" alt="Basajaun Banner">
@@ -646,8 +609,6 @@ h2{ text-align:center; }
   <footer>&copy; 2025 Robbie & Kike
   <div id="footer-contact" style="margin-top:.4rem;color:var(--muted-global)">Fragen, Daten oder GPX? → <a href="mailto:enrique.doubleyou@gmail.com">enrique.doubleyou@gmail.com</a></div>
 </footer>
-
-
 
 <a class="totop-fab" href="#top" aria-label="Nach oben">↑ <span>Nach&nbsp;oben</span></a>
 
@@ -749,11 +710,7 @@ document.addEventListener("keydown",(ev)=>{ if(ev.key==="Escape" && lb.style.dis
   setInterval(hourly, 60*60*1000); // stündlich
   document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) hourly(); });
 </script>
-
-
-
-
-
+  
 <script>
 (async function loadPlan(){
   let cfg=null; let lastErr=null; let usedUrl=null;
@@ -864,8 +821,6 @@ document.addEventListener("keydown",(ev)=>{ if(ev.key==="Escape" && lb.style.dis
   }
 })();
 </script>
-
-
 
 <!-- ECHO: START BUBBLE -->
 <div class="fazit-bubble" id="fazitBubble" role="dialog" aria-label="Badlands 2025 Key Facts">
