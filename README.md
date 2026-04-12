@@ -15,7 +15,7 @@ einem der härtesten Gravel-Ultra-Rennen Europas durch Andalusien.
 | | |
 |---|---|
 | **Event** | Badlands Gravel Race |
-| **Distanz** | ~740 km / ~20.000 hm |
+| **Distanz** | ~820 km / ~16.000 hm |
 | **Edition** | 2025 |
 | **Fahrer** | Enrique Doubleyou |
 
